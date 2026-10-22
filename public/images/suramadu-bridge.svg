@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Sky & Atmosphere Gradients -->
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2c4d75" />
+      <stop offset="40%" stop-color="#3d6391" />
+      <stop offset="70%" stop-color="#4d74a3" />
+      <stop offset="100%" stop-color="#6086b5" />
+    </linearGradient>
+
+    <linearGradient id="roadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="pylonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#cbd5e1" />
+      <stop offset="40%" stop-color="#f8fafc" />
+      <stop offset="60%" stop-color="#cbd5e1" />
+      <stop offset="100%" stop-color="#94a3b8" />
+    </linearGradient>
+
+    <linearGradient id="cableGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.3" />
+    </linearGradient>
+
+    <linearGradient id="blueTint" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#17345f" stop-opacity="0.75" />
+      <stop offset="60%" stop-color="#1b3c6d" stop-opacity="0.82" />
+      <stop offset="100%" stop-color="#132742" stop-opacity="0.92" />
+    </linearGradient>
+
+    <filter id="blurFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" />
+    </filter>
+  </defs>
+
+  <!-- Sky Background -->
+  <rect width="1200" height="1600" fill="url(#skyGrad)" />
+
+  <!-- Distant City Skyline / Haze -->
+  <path d="M 0 950 L 1200 950 L 1200 1020 L 0 1020 Z" fill="#475f7e" opacity="0.6" filter="url(#blurFilter)" />
+  <rect x="150" y="880" width="80" height="80" fill="#3a5270" opacity="0.5" />
+  <rect x="260" y="850" width="100" height="110" fill="#334a66" opacity="0.5" />
+  <rect x="400" y="900" width="70" height="60" fill="#3a5270" opacity="0.5" />
+  <rect x="750" y="870" width="90" height="90" fill="#3a5270" opacity="0.5" />
+  <rect x="880" y="840" width="110" height="120" fill="#334a66" opacity="0.5" />
+
+  <!-- Suramadu / Suroboyo Bridge Tower (Pylon Structure) -->
+  <!-- Left Pylon Column -->
+  <polygon points="460,120 485,120 500,980 435,980" fill="url(#pylonGrad)" />
+  <!-- Right Pylon Column -->
+  <polygon points="630,120 655,120 680,980 615,980" fill="url(#pylonGrad)" />
+  <!-- Pylon Top Crossbeam -->
+  <polygon points="450,110 665,110 660,170 455,170" fill="#e2e8f0" />
+  <!-- Pylon Middle Crossbeam -->
+  <polygon points="465,420 650,420 645,465 470,465" fill="#cbd5e1" />
+  <!-- Pylon Lower Crossbeam -->
+  <polygon points="450,720 665,720 660,780 455,780" fill="#94a3b8" />
+
+  <!-- Bridge Suspension Cables (Left side) -->
+  <g stroke="url(#cableGrad)" stroke-width="2.5" opacity="0.85">
+    <line x1="472" y1="200" x2="100" y2="1000" />
+    <line x1="472" y1="240" x2="160" y2="1000" />
+    <line x1="472" y1="280" x2="220" y2="1000" />
+    <line x1="472" y1="320" x2="280" y2="1000" />
+    <line x1="472" y1="360" x2="340" y2="1000" />
+    <line x1="472" y1="400" x2="400" y2="1000" />
+    <line x1="480" y1="490" x2="430" y2="1000" />
+    <line x1="480" y1="540" x2="460" y2="1000" />
+  </g>
+
+  <!-- Bridge Suspension Cables (Right side) -->
+  <g stroke="url(#cableGrad)" stroke-width="2.5" opacity="0.85">
+    <line x1="642" y1="200" x2="1010" y2="1000" />
+    <line x1="642" y1="240" x2="950" y2="1000" />
+    <line x1="642" y1="280" x2="890" y2="1000" />
+    <line x1="642" y1="320" x2="830" y2="1000" />
+    <line x1="642" y1="360" x2="770" y2="1000" />
+    <line x1="642" y1="400" x2="710" y2="1000" />
+    <line x1="635" y1="490" x2="675" y2="1000" />
+    <line x1="635" y1="540" x2="650" y2="1000" />
+  </g>
+
+  <!-- Main Bridge Roadway Deck (Perspective) -->
+  <polygon points="400,980 720,980 1200,1600 0,1600" fill="url(#roadGrad)" />
+
+  <!-- Road Dividers & Markings in Perspective -->
+  <polygon points="560,980 564,980 610,1600 595,1600" fill="#94a3b8" opacity="0.7" />
+  <polygon points="510,980 513,980 430,1600 415,1600" fill="#ffffff" opacity="0.4" stroke-dasharray="20,20" />
+  <polygon points="615,980 618,980 820,1600 805,1600" fill="#ffffff" opacity="0.4" stroke-dasharray="20,20" />
+
+  <!-- Pedestrian Sidewalk / Guard Rail (Left side) -->
+  <polygon points="400,980 430,980 180,1600 0,1600" fill="#475569" />
+  <polygon points="0,1520 200,1520 220,1600 0,1600" fill="#334155" />
+  <!-- Suroboyo Bridge Wall Sign -->
+  <text x="30" y="1480" font-family="system-ui, sans-serif" font-size="34" font-weight="bold" fill="#64748b" letter-spacing="1">Suroboyo</text>
+  <text x="35" y="1520" font-family="system-ui, sans-serif" font-size="24" font-weight="600" fill="#475569" letter-spacing="2">Bridge</text>
+
+  <!-- Lamp posts along the bridge -->
+  <g stroke="#94a3b8" stroke-width="4" stroke-linecap="round" fill="none">
+    <path d="M 120 1450 L 120 1150 Q 120 1100 170 1100" />
+    <circle cx="175" cy="1105" r="8" fill="#fef08a" opacity="0.9" stroke="none" />
+    <path d="M 230 1300 L 230 1080 Q 230 1040 270 1040" />
+    <circle cx="275" cy="1045" r="6" fill="#fef08a" opacity="0.9" stroke="none" />
+    <path d="M 320 1180 L 320 1020 Q 320 990 350 990" />
+    <circle cx="355" cy="995" r="5" fill="#fef08a" opacity="0.9" stroke="none" />
+  </g>
+
+  <!-- Vehicles / Traffic on Bridge -->
+  <!-- Distant Traffic -->
+  <ellipse cx="540" cy="1030" rx="18" ry="12" fill="#1e293b" />
+  <ellipse cx="590" cy="1040" rx="24" ry="14" fill="#334155" />
+  <ellipse cx="650" cy="1060" rx="30" ry="16" fill="#475569" />
+
+  <!-- Mid-distance Car / SUV -->
+  <g transform="translate(680, 1140)">
+    <rect x="-40" y="-30" width="80" height="50" rx="8" fill="#1e293b" />
+    <rect x="-34" y="-24" width="68" height="24" rx="4" fill="#0f172a" />
+    <!-- Rear lights & license plate -->
+    <rect x="-35" y="6" width="14" height="6" rx="2" fill="#ef4444" opacity="0.9" />
+    <rect x="21" y="6" width="14" height="6" rx="2" fill="#ef4444" opacity="0.9" />
+    <rect x="-10" y="8" width="20" height="8" rx="1" fill="#f8fafc" />
+    <!-- Tires -->
+    <rect x="-42" y="18" width="12" height="12" rx="3" fill="#000000" />
+    <rect x="30" y="18" width="12" height="12" rx="3" fill="#000000" />
+  </g>
+
+  <!-- Motorcyclist 1 (Mid distance) -->
+  <g transform="translate(420, 1200)">
+    <!-- Rider body & helmet -->
+    <circle cx="0" cy="-45" r="14" fill="#1e293b" />
+    <path d="M -16 -30 C -16 -35, 16 -35, 16 -30 L 14 10 L -14 10 Z" fill="#334155" />
+    <!-- Motorcycle -->
+    <rect x="-12" y="10" width="24" height="25" rx="4" fill="#0f172a" />
+    <circle cx="0" cy="22" r="5" fill="#ef4444" />
+    <circle cx="0" cy="35" r="8" fill="#000000" />
+  </g>
+
+  <!-- Motorcyclist 2 (Foreground / Prominent in Figma screenshot) -->
+  <g transform="translate(560, 1340) scale(1.4)">
+    <!-- Helmet with visor reflection -->
+    <circle cx="0" cy="-60" r="16" fill="#0f172a" />
+    <ellipse cx="2" cy="-62" rx="10" ry="6" fill="#38bdf8" opacity="0.5" />
+    <!-- Rider Jacket with backpack -->
+    <path d="M -22 -42 C -20 -50, 20 -50, 22 -42 L 20 5 L -20 5 Z" fill="#1e293b" />
+    <!-- Backpack -->
+    <rect x="-12" y="-38" width="24" height="32" rx="6" fill="#090d16" />
+    <!-- Scooter / Motorcycle Rear -->
+    <path d="M -18 5 L 18 5 L 14 35 L -14 35 Z" fill="#1e293b" />
+    <!-- Taillight -->
+    <polygon points="-12,12 12,12 8,20 -8,20" fill="#dc2626" />
+    <!-- License plate with Surabaya 'L' plate like in screenshot -->
+    <rect x="-14" y="24" width="28" height="14" rx="2" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8" />
+    <text x="0" y="34" font-family="sans-serif" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">L 6897 KZ</text>
+    <!-- Rear Tire -->
+    <rect x="-7" y="38" width="14" height="22" rx="4" fill="#000000" />
+  </g>
+
+  <!-- Rich Blue Overlay Tint as seen in Figma -->
+  <rect width="1200" height="1600" fill="url(#blueTint)" />
+</svg>
