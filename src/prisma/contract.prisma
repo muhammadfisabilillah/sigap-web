@@ -1,0 +1,169 @@
+// use prisma-8
+// Data contract SIGAP — 11 entitas sesuai rancangan ERD (README)
+
+enum Role {
+  Warga
+  Admin
+  Petugas
+}
+
+enum StatusAkun {
+  BelumTerverifikasi
+  MenungguVerifikasi
+  Terverifikasi
+}
+
+enum StatusVerifikasiDomisili {
+  Menunggu
+  Diterima
+  Ditolak
+}
+
+enum StatusAduan {
+  MenungguVerifikasi
+  Diproses
+  DiteruskanKecamatan
+  MenungguTinjauan
+  Selesai
+  Ditolak
+}
+
+enum StatusRiwayat {
+  Dibuat
+  Diverifikasi
+  Dikembalikan
+  Diteruskan
+  DitindakLanjuti
+  DitetapkanSelesai
+}
+
+model User {
+  id          Int        @id @default(autoincrement())
+  nama        String
+  email       String     @unique
+  passwordHash String
+  role        Role       @default(Warga)
+  statusAkun  StatusAkun @default(BelumTerverifikasi)
+  noHp        String?
+  kecamatanId Int?
+  kecamatan   Kecamatan? @relation(fields: [kecamatanId], references: [id])
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+
+  verifikasi  VerifikasiDomisili[]
+  aduan       Aduan[]              @relation("Pelapor")
+  upvote      Upvote[]
+  riwayat     RiwayatStatus[]
+  notifikasi  Notifikasi[]
+  sesi        Session[]
+}
+
+model VerifikasiDomisili {
+  id        Int                     @id @default(autoincrement())
+  userId    Int                     @unique
+  user      User                    @relation(fields: [userId], references: [id])
+  fileKtpUrl String
+  status    StatusVerifikasiDomisili @default(Menunggu)
+  catatan   String?
+  createdAt TimestamptzString       @default(now())
+  updatedAt temporal.updatedAtString()
+}
+
+model Kecamatan {
+  id        Int    @id @default(autoincrement())
+  nama      String @unique
+  user      User[]
+  aduan     Aduan[]
+  createdAt TimestamptzString @default(now())
+}
+
+model Kategori {
+  id          Int     @id @default(autoincrement())
+  nama        String  @unique
+  aduan       Aduan[]
+  createdAt   TimestamptzString @default(now())
+}
+
+model Instansi {  id        Int     @id @default(autoincrement())
+  nama      String  @unique
+  aduan     Aduan[]
+  createdAt TimestamptzString @default(now())
+}
+
+model Aduan {
+  id           Int          @id @default(autoincrement())
+  nomorTiket   String       @unique
+  pelaporId    Int
+  pelapor      User         @relation("Pelapor", fields: [pelaporId], references: [id])
+  kategoriId   Int
+  kategori     Kategori     @relation(fields: [kategoriId], references: [id])
+  kecamatanId  Int
+  kecamatan    Kecamatan    @relation(fields: [kecamatanId], references: [id])
+  judul        String
+  deskripsi    String
+  latitude     Float
+  longitude    Float
+  status       StatusAduan  @default(MenungguVerifikasi)
+  instansiId   Int?
+  instansi     Instansi?    @relation(fields: [instansiId], references: [id])
+  totalUpvote  Int          @default(0)
+  createdAt    TimestamptzString @default(now())
+  updatedAt    temporal.updatedAtString()
+
+  foto         FotoAduan[]
+  upvote       Upvote[]
+  riwayat      RiwayatStatus[]
+  notifikasi   Notifikasi[]
+}
+
+model FotoAduan {
+  id        Int     @id @default(autoincrement())
+  aduanId   Int
+  aduan     Aduan   @relation(fields: [aduanId], references: [id])
+  url       String
+  createdAt TimestamptzString @default(now())
+}
+
+model Upvote {
+  id        Int     @id @default(autoincrement())
+  aduanId   Int
+  aduan     Aduan   @relation(fields: [aduanId], references: [id])
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  createdAt TimestamptzString @default(now())
+
+  @@unique([aduanId, userId])
+}
+
+model RiwayatStatus {
+  id          Int          @id @default(autoincrement())
+  aduanId     Int
+  aduan       Aduan        @relation(fields: [aduanId], references: [id])
+  status      StatusRiwayat
+  statusAduan StatusAduan
+  catatan     String?
+  olehId      Int
+  oleh        User         @relation(fields: [olehId], references: [id])
+  createdAt   TimestamptzString @default(now())
+}
+
+model Notifikasi {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  aduanId   Int?
+  aduan     Aduan?  @relation(fields: [aduanId], references: [id])
+  judul     String
+  pesan     String
+  dibaca    Boolean @default(false)
+  createdAt TimestamptzString @default(now())
+}
+
+model Session {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  tokenHash String  @unique
+  expiresAt TimestamptzString
+  createdAt TimestamptzString @default(now())
+}
