@@ -16,3 +16,11 @@ export async function requireRole(role: Role): Promise<SessionUser> {
   }
   return user;
 }
+
+export async function getVerifiedWarga(): Promise<SessionUser | null> {
+  const user = await getSessionUser();
+  if (!user) return null;
+  if (user.role !== 'Warga') return null;
+  if (user.statusAkun !== 'Terverifikasi') return null;
+  return user;
+}
