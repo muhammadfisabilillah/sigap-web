@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+
+# Node & build artefak lokal (di-build ulang di dalam image)
+node_modules
+.next
+out
+build
+dist
+coverage
+
+# Environment files — larang masuk image .env asli; .env.example ikut
+# (dipakai hanya sebagai dokumentasi, nilai asli disuntik via env compose)
+.env
+.env.*
+!.env.example
+
+# Config lokal / editor
+.opencode
+.vscode
+.idea
+*.local
+opencode.json
+
+# Folder yang dibentuk postinstall `prisma skills sync` di stage deps
+.agents
+.claude
+.cursor
+.devin
+
+# Dokumentasi kerja
+README.md
+AGENTS.md
+prisma-8.md

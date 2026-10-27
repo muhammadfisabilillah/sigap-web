@@ -1,0 +1,92 @@
+# ============================================================================
+# SIGAP — Docker Compose (aplikasi + database)
+# ----------------------------------------------------------------------------
+# Cara pakai (di lokal maupun VM Azure):
+#   1. cp .env.example .env lalu isi nilai aslinya (file .env tidak di-commit)
+#   2. docker compose up -d          -> jalankan app + db
+#   3. docker compose run --rm --profile setup setup-db
+#                                    -> buat skema DB + seed data referensi
+#   4. buka http://<IP_HOST> (:${APP_PORT})
+#
+# Arsitektur jaringan:
+#   - backend  (internal: true)  -> hanya app & db; db TIDAK publish port,
+#      sehingga database tidak bisa diakses dari luar VM sama sekali.
+#   - frontend -> tempat aplikasi publish port ke host (APP_PORT).
+# ============================================================================
+
+name: sigap
+
+services:
+
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-80}:3000"
+    environment:
+      NODE_ENV: production
+      # Host "db" = nama service database di jaringan backend (bukan localhost)
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    # Catatan: sengaja TIDAK ada "ports:" — database tidak di-expose ke publik
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - sigap-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - backend
+
+  # ---------------------------------------------------------------------------
+  # One-shot (bukan service jangka panjang): inisialisasi skema + seed data.
+  # Hanya dijalankan eksplisit lewat profile "setup" saat deploy pertama kali,
+  # sehingga tidak ditampilkan pada `docker compose ps` yang biasa.
+  # ---------------------------------------------------------------------------
+  setup-db:
+    build:
+      context: .
+      target: tools
+    profiles: ["setup"]
+    restart: "no"
+    command: ["sh", "-c", "npx prisma db init --db \"$${DATABASE_URL}\" && node src/prisma/seed.mjs"]
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+
+volumes:
+  sigap-db-data:
+
+networks:
+  frontend:
+  backend:
+    internal: true
