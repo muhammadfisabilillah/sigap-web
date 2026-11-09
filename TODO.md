@@ -74,11 +74,11 @@ Tujuan: status aduan mengalir berurutan tanpa harus pilih manual dari daftar sem
 
 ## Prioritas 6 — Rapikan yang Menunggak
 
-- [ ] Ganti halaman `/domisili/status` yang masih mock data dengan data nyata dari API
+- [x] Ganti halaman `/domisili/status` yang masih mock data dengan data nyata dari API
 - [ ] Kompres foto `public/images/pexels-pamanjoe-21896936.jpg` (saat ini ±5 MB) agar repo ringan
-- [ ] Buat akun seed resmi untuk Admin & Petugas (sekarang masih diubah manual lewat SQL)
-- [ ] Tambah halaman lupa kata sandi (form login sebelumnya menautkannya, tapi halamannya belum ada)
-- [ ] Bucket KTP di Supabase dibuat publik — ubah jadi privat + signed URL
+- [x] Buat akun seed resmi untuk Admin & Petugas (sekarang masih diubah manual lewat SQL)
+- [x] Tambah halaman lupa kata sandi (form login sebelumnya menautkannya, tapi halamannya belum ada)
+- [x] Bucket KTP di Supabase dibuat publik — ubah jadi privat + signed URL
 - [ ] Perbarui `AGENTS.md` bila status implementasi berubah lagi
 
 ## Prioritas 7 — Uji & Rilis

@@ -122,6 +122,12 @@ export function LoginForm() {
           </div>
         </div>
 
+        <div className="flex justify-end pt-1">
+          <Link href="/lupa-password" className="text-xs font-medium text-brand hover:underline">
+            Lupa kata sandi?
+          </Link>
+        </div>
+
         <div className="pt-2">
           <button
             type="submit"
