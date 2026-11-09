@@ -21,10 +21,10 @@ export function AuthShell({ title, description, children, footer }: AuthShellPro
           </div>
 
           <div className="pointer-events-auto mb-16 max-w-sm">
-            <h2 className="text-[28px] font-semibold leading-[1.2] text-white xl:text-[32px]">
+            <h2 className="text-[28px] font-semibold leading-[1.2] text-white [text-shadow:0_1px_12px_rgba(0,0,0,0.55)] xl:text-[32px]">
               Aduan warga, ditangani bersama.
             </h2>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/85">
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.6)]">
               Satu kanal untuk melaporkan persoalan di sekitar Anda dan memantau tindak lanjutnya.
             </p>
           </div>

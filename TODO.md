@@ -21,13 +21,14 @@ Branch aktif: `feature/SCRUM-68-auth-ui`
 
 ## Prioritas 1 — Modul Aduan Warga (inti aplikasi)
 
-- [ ] API buat aduan: `POST /api/aduan` (judul, deskripsi, kategori, kecamatan, lat/long, foto)
-- [ ] Upload foto aduan ke Supabase Storage (bucket baru, mis. `aduan`)
-- [ ] Generate nomor tiket unik (`nomorTiket`)
-- [ ] Form buat aduan di `/warga/aduan/baru`
-- [ ] Integrasi Geolocation API untuk isi koordinat otomatis
-- [ ] Halaman daftar "Aduan Saya" + detail aduan + riwayat status
-- [ ] Halaman "Laporan Publik" untuk warga sekecamatan
+- [x] API buat aduan: `POST /api/aduan` (judul, deskripsi, kategori, kecamatan, lat/long, foto)
+- [x] Upload foto aduan ke Supabase Storage (bucket `aduan`)
+- [x] Generate nomor tiket unik (`nomorTiket`)
+- [x] Form buat aduan di `/warga/aduan/baru`
+- [x] Integrasi Geolocation API untuk isi koordinat otomatis
+- [x] Halaman daftar "Aduan Saya" + detail aduan + riwayat status
+- [x] Halaman "Laporan Publik" untuk warga sekecamatan
+- [ ] API list aduan: `GET /api/aduan?scope=mine|public` (sudah ada, tinggal dipakai/ditest)
 
 ## Prioritas 2 — Verifikasi & Pengelolaan Admin
 

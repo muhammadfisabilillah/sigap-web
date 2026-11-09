@@ -72,8 +72,8 @@ export function AuthPhotoCarousel({ compact = false }: { compact?: boolean }) {
         }`}
       >
         <p
-          className={`bg-black/35 text-white/85 backdrop-blur-sm w-fit ${
-            compact ? 'px-2.5 py-1.5 text-[11px]' : 'px-3 py-2 text-[11px] leading-relaxed'
+          className={`w-fit font-medium text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.65)] ${
+            compact ? 'text-[11px]' : 'text-[12px] leading-relaxed'
           }`}
         >
           {SLIDES[index].caption}

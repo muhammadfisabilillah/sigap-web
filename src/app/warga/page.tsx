@@ -98,14 +98,20 @@ async function WargaDashboard() {
         <ModuleCard
           title="Buat aduan baru"
           description="Laporkan masalah di lingkungan Anda lengkap dengan foto dan titik lokasi GPS."
+          href="/warga/aduan/baru"
+          cta="Buat aduan"
         />
         <ModuleCard
           title="Aduan saya"
           description="Riwayat dan progres penanganan aduan yang pernah Anda kirim."
+          href="/warga/aduan"
+          cta="Lihat aduan saya"
         />
         <ModuleCard
           title="Laporan publik"
-          description="Dukung aduan warga sekecamatan dengan upvote dan pantau yang mendesak."
+          description="Lihat aduan dari warga Surabaya dan pantau penanganannya."
+          href="/warga/laporan-publik"
+          cta="Lihat laporan publik"
         />
       </div>
 
