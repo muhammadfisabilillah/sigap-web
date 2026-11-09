@@ -12,10 +12,10 @@ type LoginResponse = {
 };
 
 const inputClass =
-  'w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-[#183B7E] focus:outline-none focus:ring-2 focus:ring-[#183B7E]/20 disabled:bg-slate-50 disabled:text-slate-400';
+  'w-full rounded-md border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-[#183B7E] focus:outline-none focus:ring-2 focus:ring-[#183B7E]/15 disabled:bg-slate-50 disabled:text-slate-400';
 
 const inputErrorClass =
-  'w-full rounded-lg border border-red-300 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200 disabled:bg-slate-50 disabled:text-slate-400';
+  'w-full rounded-md border border-red-300 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 disabled:bg-slate-50 disabled:text-slate-400';
 
 export function LoginForm() {
   const router = useRouter();
@@ -62,7 +62,7 @@ export function LoginForm() {
         <div
           role="alert"
           aria-live="polite"
-          className="mb-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-3.5 text-sm text-red-700"
+          className="mb-5 flex items-start gap-3 rounded-md border border-red-200 bg-red-50 p-3.5 text-sm text-red-700"
         >
           <svg
             className="mt-0.5 h-5 w-5 shrink-0 text-red-500"
@@ -141,7 +141,7 @@ export function LoginForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#183B7E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-[#132F66] focus:outline-none focus:ring-2 focus:ring-[#183B7E]/40 focus:ring-offset-2 active:bg-[#0F2652] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#132A50] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0d2138] focus:outline-none focus:ring-2 focus:ring-[#132A50]/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isLoading ? (
               <>

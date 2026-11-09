@@ -16,9 +16,9 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <AuthShell
-      title="Masuk ke SIGAP"
-      description="Gunakan email dan kata sandi akun Anda."
-      footer="SIGAP — Sistem Informasi Gerak Aduan Publik Kota Surabaya"
+      title="Masuk ke akun Anda"
+      description="Gunakan email dan kata sandi yang terdaftar."
+      footer="© 2026 Pemerintah Kota Surabaya"
     >
       <Suspense fallback={<AuthFormSkeleton />}>
         <LoginGate />

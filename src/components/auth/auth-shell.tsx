@@ -11,89 +11,86 @@ type AuthShellProps = {
 
 export function AuthShell({ title, description, children, footer }: AuthShellProps) {
   return (
-    <main className="flex min-h-screen w-full flex-col bg-white lg:flex-row">
-      <section className="relative hidden select-none flex-col justify-between overflow-hidden bg-[#132A50] p-10 lg:flex lg:w-1/2 xl:w-[52%] xl:p-14">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/suramadu-bridge.svg"
-            alt="Jembatan Surabaya"
-            fill
-            priority
-            unoptimized
-            className="object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0e1e38]/95 via-[#183B7E]/65 to-[#183B7E]/40" />
-        </div>
+    <main className="min-h-screen w-full bg-[#fbfaf7] lg:grid lg:grid-cols-[1.1fr_1fr]">
+      <aside className="relative hidden min-h-screen overflow-hidden bg-[#0d2138] lg:block">
+        <Image
+          src="/images/Surabaya.jpg"
+          alt="Patung Sura dan Baya, ikon Kota Surabaya"
+          fill
+          priority
+          sizes="55vw"
+          className="object-cover object-[50%_42%]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#08192b]/50 via-[#08192b]/5 to-[#08192b]/90" />
 
-        <div className="relative z-10">
+        <div className="relative z-10 flex h-full min-h-screen flex-col justify-between p-10 xl:p-14">
           <SigapLogo href="/" />
-        </div>
 
-        <div className="relative z-10 max-w-md pb-4">
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium tracking-wide text-white/90">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />
-            Pemerintah Kota Surabaya
-          </p>
-          <h2 className="text-3xl font-bold leading-snug text-white xl:text-4xl">
-            Bersama warga, membangun Surabaya yang lebih tanggap.
-          </h2>
-          <ul className="mt-6 space-y-2.5 text-sm text-white/80">
-            <li className="flex items-center gap-2.5">
-              <CheckIcon />
-              Laporkan aduan dengan cepat dan mudah
-            </li>
-            <li className="flex items-center gap-2.5">
-              <CheckIcon />
-              Pantau status penanganan secara transparan
-            </li>
-            <li className="flex items-center gap-2.5">
-              <CheckIcon />
-              Dukung aduan penting di sekitar Anda
-            </li>
-          </ul>
-        </div>
-      </section>
+          <div className="max-w-md">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="h-px w-8 bg-amber-400" aria-hidden="true" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300">
+                Kota Surabaya
+              </span>
+            </div>
+            <h2 className="text-[32px] font-semibold leading-[1.15] tracking-tight text-white xl:text-[38px]">
+              Aduan warga,
+              <br />
+              ditangani bersama.
+            </h2>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/70">
+              Satu kanal untuk melaporkan persoalan di sekitar Anda dan memantau tindak
+              lanjutnya.
+            </p>
+          </div>
 
-      <section className="flex min-h-screen flex-1 flex-col items-center justify-center bg-white px-6 py-12 sm:px-10 lg:px-12 xl:px-16">
-        <div className="w-full max-w-[420px]">
-          <div className="mb-8 lg:hidden">
-            <SigapLogo href="/" size="sm" variant="dark" />
+          <div className="flex items-end justify-between gap-6">
+            <p className="text-[11px] leading-relaxed text-white/55">
+              Patung Sura dan Baya — ikon Kota Surabaya
+            </p>
+            <span className="text-[11px] font-medium tabular-nums text-white/40">01 / 01</span>
+          </div>
+        </div>
+      </aside>
+
+      <section className="flex min-h-screen flex-col justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20">
+        <div className="mx-auto w-full max-w-[380px]">
+          <div className="relative mb-8 h-44 overflow-hidden rounded-md lg:hidden">
+            <Image
+              src="/images/Surabaya.jpg"
+              alt="Patung Sura dan Baya, ikon Kota Surabaya"
+              fill
+              sizes="100vw"
+              className="object-cover object-[50%_36%]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#08192b]/45 via-[#08192b]/5 to-[#08192b]/80" />
+            <div className="absolute inset-x-0 top-0 p-4">
+              <SigapLogo href="/" size="sm" />
+            </div>
+            <p className="absolute inset-x-0 bottom-0 p-4 text-[11px] text-white/70">
+              Patung Sura dan Baya — ikon Kota Surabaya
+            </p>
           </div>
 
           <div className="mb-7">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-[28px]">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              SIGAP Surabaya
+            </p>
+            <h1 className="text-[28px] font-semibold leading-tight tracking-tight text-slate-900">
               {title}
             </h1>
-            <p className="mt-1 text-sm text-slate-500">{description}</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">{description}</p>
           </div>
 
           {children}
 
           {footer ? (
-            <div className="mt-8 border-t border-slate-100 pt-5 text-center text-xs text-slate-400">
+            <div className="mt-10 border-t border-slate-200 pt-4 text-[11px] leading-relaxed text-slate-400">
               {footer}
             </div>
           ) : null}
         </div>
       </section>
     </main>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4 shrink-0 text-[#F59E0B]"
-      aria-hidden="true"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
   );
 }

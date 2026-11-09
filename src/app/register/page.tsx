@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <AuthShell
-      title="Buat akun SIGAP"
-      description="Daftar sebagai warga, lalu ajukan verifikasi domisili."
-      footer="SIGAP — Sistem Informasi Gerak Aduan Publik Kota Surabaya"
+      title="Buat akun warga"
+      description="Daftar untuk melaporkan aduan di lingkungan Anda."
+      footer="© 2026 Pemerintah Kota Surabaya"
     >
       <Suspense fallback={<AuthFormSkeleton />}>
         <RegisterGate />

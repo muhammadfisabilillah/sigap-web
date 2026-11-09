@@ -19,13 +19,13 @@ type RegisterFormProps = {
 };
 
 const baseInputClass =
-  'w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-2 disabled:bg-slate-50 disabled:text-slate-400';
+  'w-full rounded-md border px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-2 disabled:bg-slate-50 disabled:text-slate-400';
 
 function inputClass(hasError: boolean) {
   return `${baseInputClass} ${
     hasError
-      ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-      : 'border-slate-300 focus:border-[#183B7E] focus:ring-[#183B7E]/20'
+      ? 'border-red-300 focus:border-red-500 focus:ring-red-100'
+      : 'border-slate-300 focus:border-[#183B7E] focus:ring-[#183B7E]/15'
   }`;
 }
 
@@ -105,7 +105,7 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
         <div
           role="alert"
           aria-live="polite"
-          className="mb-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-3.5 text-sm text-red-700"
+          className="mb-5 flex items-start gap-3 rounded-md border border-red-200 bg-red-50 p-3.5 text-sm text-red-700"
         >
           <svg
             className="mt-0.5 h-5 w-5 shrink-0 text-red-500"
@@ -169,7 +169,7 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4">
           <div>
             <label htmlFor="noHp" className="mb-1.5 block text-sm font-medium text-slate-700">
               Nomor HP <span className="font-normal text-slate-400">(opsional)</span>
@@ -274,7 +274,7 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
           <button
             type="submit"
             disabled={isLoading}
-            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#183B7E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-[#132F66] focus:outline-none focus:ring-2 focus:ring-[#183B7E]/40 focus:ring-offset-2 active:bg-[#0F2652] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#132A50] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0d2138] focus:outline-none focus:ring-2 focus:ring-[#132A50]/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isLoading ? (
               <>
