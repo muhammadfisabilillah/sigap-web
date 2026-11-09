@@ -32,19 +32,19 @@ Branch aktif: `feature/SCRUM-68-auth-ui`
 
 ## Prioritas 2 — Verifikasi & Pengelolaan Admin
 
-- [ ] Halaman Admin: daftar pengajuan domisili menunggu verifikasi
-- [ ] Aksi terima/tolak verifikasi domisili + catatan penolakan
-- [ ] Saat diterima: update `User.statusAkun` → `Terverifikasi`
-- [ ] Halaman Admin: daftar aduan masuk, filter per status/kategori/kecamatan
-- [ ] Aksi teruskan aduan ke instansi / petugas kecamatan
-- [ ] Aksi tetapkan status akhir (Selesai / Ditolak)
+- [x] Halaman Admin: daftar pengajuan domisili menunggu verifikasi
+- [x] Aksi terima/tolak verifikasi domisili + catatan penolakan
+- [x] Saat diterima: update `User.statusAkun` → `Terverifikasi`
+- [x] Halaman Admin: daftar aduan masuk, filter per status/kategori/kecamatan
+- [x] Aksi teruskan aduan ke instansi / petugas kecamatan
+- [x] Aksi tetapkan status akhir (Selesai / Ditolak)
 
 ## Prioritas 3 — Dashboard Petugas Kecamatan
 
-- [ ] Halaman daftar aduan wilayah (filter `kecamatanId` petugas)
-- [ ] Form update progres tindak lanjut + catatan lapangan
-- [ ] Halaman validasi domisili warga di wilayahnya
-- [ ] Halaman riwayat tindak lanjut
+- [x] Halaman daftar aduan wilayah (filter `kecamatanId` petugas)
+- [x] Form update progres tindak lanjut + catatan lapangan
+- [x] Halaman validasi domisili warga di wilayahnya
+- [x] Halaman riwayat tindak lanjut
 
 ## Prioritas 4 — Partisipasi & Notifikasi
 

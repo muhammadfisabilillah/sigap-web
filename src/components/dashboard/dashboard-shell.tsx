@@ -18,14 +18,14 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
   ],
   Admin: [
     { label: 'Dasbor', href: '/admin' },
-    { label: 'Verifikasi Domisili', href: null },
-    { label: 'Kelola Aduan', href: null },
+    { label: 'Verifikasi Domisili', href: '/admin/verifikasi-domisili' },
+    { label: 'Kelola Aduan', href: '/admin/aduan' },
     { label: 'Instansi', href: null },
   ],
   Petugas: [
     { label: 'Dasbor', href: '/petugas' },
-    { label: 'Aduan Wilayah', href: null },
-    { label: 'Verifikasi Domisili', href: null },
+    { label: 'Aduan Wilayah', href: '/petugas/aduan' },
+    { label: 'Verifikasi Domisili', href: '/petugas/verifikasi-domisili' },
   ],
 };
 

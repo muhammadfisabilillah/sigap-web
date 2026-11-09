@@ -55,10 +55,14 @@ async function AdminDashboard() {
         <ModuleCard
           title="Verifikasi domisili"
           description="Tinjau berkas KTP warga, terima atau tolak pengajuan beserta catatannya."
+          href="/admin/verifikasi-domisili"
+          cta="Verifikasi sekarang"
         />
         <ModuleCard
           title="Kelola aduan"
           description="Periksa kelayakan aduan, teruskan ke instansi atau petugas kecamatan."
+          href="/admin/aduan"
+          cta="Kelola aduan"
         />
         <ModuleCard
           title="Data instansi"
@@ -68,14 +72,6 @@ async function AdminDashboard() {
           title="Laporan & statistik"
           description="Rekap aduan per kategori, kecamatan, dan status penanganan."
         />
-      </div>
-
-      <div className="mt-8 border border-line bg-card p-5">
-        <h2 className="text-sm font-semibold">Catatan</h2>
-        <p className="mt-1.5 text-sm leading-relaxed text-muted">
-          Fondasi autentikasi dan data sudah aktif. Modul verifikasi domisili serta pengelolaan
-          aduan sedang dikerjakan pada sprint berikutnya.
-        </p>
       </div>
     </DashboardShell>
   );

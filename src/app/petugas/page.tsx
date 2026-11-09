@@ -5,6 +5,7 @@ import { DashboardShell } from '@/src/components/dashboard/dashboard-shell';
 import { ModuleCard, StatCard } from '@/src/components/dashboard/dashboard-cards';
 import { PageSkeleton } from '@/src/components/dashboard/page-skeleton';
 import { requireRole } from '@/src/lib/auth/guard';
+import { getPengajuanDomisili } from '@/src/lib/verifikasi/query';
 import { db } from '@/src/prisma/db';
 
 export const metadata: Metadata = {
@@ -34,6 +35,9 @@ async function PetugasDashboard() {
     : [];
 
   const aduanAktif = aduanWilayah.filter((aduan) => STATUS_AKTIF.has(aduan.status));
+  const domisiliMenunggu = user.kecamatanId
+    ? (await getPengajuanDomisili(user, 'Menunggu')).length
+    : 0;
 
   return (
     <DashboardShell
@@ -59,9 +63,8 @@ async function PetugasDashboard() {
         />
         <StatCard
           label="Verifikasi domisili"
-          value="—"
-          tone="default"
-          hint="Modul verifikasi segera tersedia."
+          value={domisiliMenunggu}
+          hint="Pengajuan warga wilayah Anda yang menunggu."
         />
       </div>
 
@@ -69,27 +72,23 @@ async function PetugasDashboard() {
         <ModuleCard
           title="Aduan wilayah"
           description="Lihat aduan yang masuk ke kecamatan Anda dan perbarui progres penanganan lapangan."
+          href="/petugas/aduan"
+          cta="Lihat aduan wilayah"
         />
         <ModuleCard
           title="Validasi domisili"
           description="Validasi kebenaran domisili warga di wilayah kecamatan Anda."
+          href="/petugas/verifikasi-domisili"
+          cta="Verifikasi sekarang"
         />
         <ModuleCard
           title="Riwayat tindak lanjut"
-          description="Jejak perubahan status aduan yang Anda tangani."
+          description="Jejak perubahan status aduan yang Anda tangani. Tersedia di detail tiap aduan."
         />
         <ModuleCard
           title="Notifikasi"
           description="Pemberitahuan aduan baru yang diteruskan ke wilayah Anda."
         />
-      </div>
-
-      <div className="mt-8 border border-line bg-card p-5">
-        <h2 className="text-sm font-semibold">Catatan</h2>
-        <p className="mt-1.5 text-sm leading-relaxed text-muted">
-          Dasbor petugas sudah terlindungi sesuai peran. Modul tindak lanjut aduan dan validasi
-          domisili akan diaktifkan pada sprint berikutnya.
-        </p>
       </div>
     </DashboardShell>
   );

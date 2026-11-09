@@ -1,7 +1,15 @@
 import Link from 'next/link';
 import { STATUS_ADUAN_LABEL, formatTanggal, type AduanItem } from '@/src/lib/aduan/labels';
 
-export function AduanList({ aduan, emptyMessage }: { aduan: AduanItem[]; emptyMessage: string }) {
+export function AduanList({
+  aduan,
+  emptyMessage,
+  basePath = '/warga/aduan',
+}: {
+  aduan: AduanItem[];
+  emptyMessage: string;
+  basePath?: string;
+}) {
   if (aduan.length === 0) {
     return (
       <div className="border border-line bg-card px-5 py-10 text-center">
@@ -14,7 +22,7 @@ export function AduanList({ aduan, emptyMessage }: { aduan: AduanItem[]; emptyMe
     <ul className="divide-y divide-line border border-line bg-card">
       {aduan.map((item) => (
         <li key={item.id}>
-          <Link href={`/warga/aduan/${item.id}`} className="flex gap-4 px-5 py-4 hover:bg-paper">
+          <Link href={`${basePath}/${item.id}`} className="flex gap-4 px-5 py-4 hover:bg-paper">
             {item.fotoUrls[0] ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
