@@ -13,10 +13,20 @@ interface GeoCoords {
   accuracy: number | null;
 }
 
+interface UploadedPhoto {
+  id: string;
+  file: File;
+  previewUrl: string;
+}
+
 const SURABAYA_CENTER: [number, number] = [-7.2575, 112.7521];
+const ALLOWED_PHOTO_EXTENSIONS = [".jpg", ".jpeg", ".png"];
+const ALLOWED_PHOTO_MIME_TYPES = ["image/jpeg", "image/png"];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_PHOTOS = 3;
 
 // ============================================================================
-// FormLaporan Component (SCRUM-87: Integrasi Geolocation API & Peta Leaflet)
+// FormLaporan Component (SCRUM-87: Geolocation GPS & SCRUM-89: Upload Foto)
 // ============================================================================
 export function FormLaporan() {
   // --- Form Field States ---
@@ -24,10 +34,14 @@ export function FormLaporan() {
   const [kategori, setKategori] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
   const [alamatDetail, setAlamatDetail] = useState("");
-  const [fotoBukti, setFotoBukti] = useState<File | null>(null);
-  const [fotoPreview, setFotoPreview] = useState<string | null>(null);
 
-  // --- Geolocation States (Task SCRUM-87) ---
+  // --- Task SCRUM-89: Photo Upload States ---
+  const [photos, setPhotos] = useState<UploadedPhoto[]>([]);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // --- Task SCRUM-87: Geolocation States ---
   const [coords, setCoords] = useState<GeoCoords>({
     latitude: "",
     longitude: "",
@@ -236,7 +250,7 @@ export function FormLaporan() {
 
         mapInstanceRef.current = map;
 
-        // Tile layer OpenStreetMap (Format URL resmi /{z}/{x}/{y}.png)
+        // Tile layer OpenStreetMap resmi /{z}/{x}/{y}.png
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
           maxZoom: 19,
@@ -289,14 +303,109 @@ export function FormLaporan() {
     };
   }, [coords.latitude, coords.longitude, updateMapPosition]);
 
+  // ==========================================================================
+  // LOGIKA VALIDASI & UPLOAD FOTO (SCRUM-89)
+  // ==========================================================================
+
   /**
-   * Handle Upload Foto Bukti
+   * Validasi dan penambahan foto
    */
-  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFotoBukti(file);
-      setFotoPreview(URL.createObjectURL(file));
+  const handleAddFiles = useCallback((incomingFiles: FileList | File[]) => {
+    setPhotoError(null);
+    const fileList = Array.from(incomingFiles);
+    if (fileList.length === 0) return;
+
+    // 1. Validasi batas jumlah foto (Maksimal 3 foto)
+    if (photos.length + fileList.length > MAX_PHOTOS) {
+      setPhotoError(
+        `Maksimal hanya boleh mengunggah ${MAX_PHOTOS} foto bukti kejadian. Saat ini sudah ada ${photos.length} foto terpilih.`
+      );
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    const acceptedPhotos: UploadedPhoto[] = [];
+
+    for (const file of fileList) {
+      const fileNameLower = file.name.toLowerCase();
+      const hasValidExt = ALLOWED_PHOTO_EXTENSIONS.some((ext) => fileNameLower.endsWith(ext));
+      const hasValidMime = ALLOWED_PHOTO_MIME_TYPES.includes(file.type);
+
+      // 2. Validasi jenis file: Hanya izinkan ekstensi .jpg, .jpeg, dan .png
+      if (!hasValidExt || !hasValidMime) {
+        setPhotoError(
+          `Berkas "${file.name}" ditolak. Format yang diizinkan hanya file .JPG, .JPEG, dan .PNG.`
+        );
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        return;
+      }
+
+      // 3. Validasi ukuran: Maksimal 5 MB per foto
+      if (file.size > MAX_FILE_SIZE) {
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+        setPhotoError(
+          `Berkas "${file.name}" berukuran ${sizeInMB} MB. Ukuran maksimal yang diperbolehkan adalah 5 MB per foto.`
+        );
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        return;
+      }
+
+      if (file.size === 0) {
+        setPhotoError(`Berkas "${file.name}" tidak dapat diproses karena kosong (0 byte).`);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        return;
+      }
+
+      acceptedPhotos.push({
+        id: `${file.name}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        file,
+        previewUrl: URL.createObjectURL(file),
+      });
+    }
+
+    setPhotos((prev) => [...prev, ...acceptedPhotos]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, [photos.length]);
+
+  /**
+   * Menghapus foto dari daftar thumbnail
+   */
+  const handleRemovePhoto = (idToRemove: string) => {
+    setPhotoError(null);
+    setPhotos((prev) => {
+      const target = prev.find((p) => p.id === idToRemove);
+      if (target) {
+        URL.revokeObjectURL(target.previewUrl);
+      }
+      return prev.filter((p) => p.id !== idToRemove);
+    });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  /**
+   * Handler Drag & Drop Event
+   */
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (photos.length < MAX_PHOTOS) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleAddFiles(e.dataTransfer.files);
     }
   };
 
@@ -336,6 +445,8 @@ export function FormLaporan() {
       latitude: Number(coords.latitude),
       longitude: Number(coords.longitude),
       accuracy: coords.accuracy,
+      totalFoto: photos.length,
+      namaFoto: photos.map((p) => p.file.name),
     };
 
     console.log("Payload siap dikirim ke API (SCRUM-90):", payload);
@@ -344,7 +455,7 @@ export function FormLaporan() {
       setIsSubmitting(false);
       setSubmitMessage({
         type: "success",
-        text: "Laporan dan koordinat lokasi GPS Anda berhasil dikirim ke sistem SIGAP!",
+        text: `Laporan warga berhasil disimpan! (${photos.length} foto bukti & koordinat GPS siap diproses).`,
       });
     }, 1000);
   };
@@ -694,63 +805,182 @@ export function FormLaporan() {
       </div>
 
       {/* =================================================================== */}
-      {/* BAGIAN 3: LAMPIRAN FOTO BUKTI                                      */}
+      {/* BAGIAN 3: LAMPIRAN FOTO BUKTI KEJADIAN (TASK SCRUM-89)             */}
       {/* =================================================================== */}
       <div className="space-y-4 pt-2">
-        <div className="flex items-center gap-2 pb-2 border-b border-slate-200/80">
-          <div className="w-7 h-7 rounded-lg bg-blue-100 text-[#183B7E] flex items-center justify-center font-bold text-xs">
-            3
+        <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-blue-100 text-[#183B7E] flex items-center justify-center font-bold text-xs">
+              3
+            </div>
+            <h2 className="text-base font-bold text-slate-900">
+              Foto Bukti Kejadian
+            </h2>
           </div>
-          <h2 className="text-base font-bold text-slate-900">Lampiran Foto Bukti (Opsional)</h2>
+          {/* Counter Jumlah Foto */}
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+            {photos.length} / {MAX_PHOTOS} Foto Terpilih
+          </span>
         </div>
 
-        <div>
-          <label
-            htmlFor="fotoInput"
-            className="group flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-slate-300 hover:border-[#183B7E] rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-blue-50/30 transition-all p-4 text-center"
-          >
-            {fotoPreview ? (
-              <div className="flex items-center gap-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={fotoPreview}
-                  alt="Pratinjau Foto"
-                  className="w-24 h-24 object-cover rounded-xl shadow-sm border border-slate-200"
-                />
-                <div className="text-left">
-                  <p className="text-xs font-semibold text-slate-800">{fotoBukti?.name}</p>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
-                    {fotoBukti ? (fotoBukti.size / 1024 / 1024).toFixed(2) : 0} MB
-                  </p>
-                  <span className="mt-2 inline-block text-xs font-semibold text-[#183B7E] group-hover:underline">
-                    Ganti Foto
-                  </span>
-                </div>
+        {/* Area Drag & Drop / Tombol Unggah */}
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={() => {
+            if (photos.length < MAX_PHOTOS) {
+              fileInputRef.current?.click();
+            }
+          }}
+          className={`relative rounded-2xl border-2 border-dashed transition-all p-6 text-center select-none ${
+            photos.length >= MAX_PHOTOS
+              ? "border-slate-200 bg-slate-50/60 cursor-not-allowed opacity-80"
+              : isDragging
+              ? "border-[#183B7E] bg-blue-50/70 shadow-sm cursor-copy"
+              : "border-slate-300 hover:border-[#183B7E] bg-slate-50/40 hover:bg-blue-50/30 cursor-pointer"
+          }`}
+        >
+          <input
+            ref={fileInputRef}
+            id="fotoInput"
+            name="fotoInput"
+            type="file"
+            accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+            multiple
+            disabled={photos.length >= MAX_PHOTOS}
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                handleAddFiles(e.target.files);
+              }
+            }}
+            className="hidden"
+          />
+
+          <div className="flex flex-col items-center justify-center gap-2">
+            <div
+              className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform ${
+                isDragging
+                  ? "scale-110 bg-[#183B7E] text-white shadow-md"
+                  : "bg-blue-100 text-[#183B7E]"
+              }`}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+
+            {photos.length >= MAX_PHOTOS ? (
+              <div>
+                <p className="text-sm font-bold text-slate-700">
+                  Batas Maksimal 3 Foto Tercapai
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Hapus salah satu foto di bawah jika ingin mengganti dengan foto lain.
+                </p>
               </div>
             ) : (
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-blue-100 text-[#183B7E] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <p className="text-xs sm:text-sm font-semibold text-slate-700">
-                  Unggah Foto Masalah (JPG, PNG, WebP)
+              <div>
+                <p className="text-sm font-bold text-slate-800">
+                  {isDragging ? "Lepaskan foto di sini..." : "Tarik & lepas foto bukti ke sini, atau klik untuk memilih"}
                 </p>
-                <p className="text-[11px] text-slate-400 mt-1">Maksimal ukuran berkas 5 MB</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Format yang didukung: <span className="font-semibold text-slate-700">.JPG, .JPEG, .PNG</span> (Maks. 5 MB / foto, tersisa {MAX_PHOTOS - photos.length} slot)
+                </p>
               </div>
             )}
-            <input
-              id="fotoInput"
-              name="fotoInput"
-              type="file"
-              accept="image/*"
-              onChange={handleFotoChange}
-              className="hidden"
-            />
-          </label>
+          </div>
         </div>
+
+        {/* Feedback Pesan Error Validasi (SCRUM-89) */}
+        {photoError && (
+          <div
+            role="alert"
+            aria-live="polite"
+            className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50/95 p-3.5 text-xs sm:text-sm text-red-700 animate-fadeIn"
+          >
+            <svg
+              className="w-5 h-5 flex-shrink-0 text-red-500 mt-0.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <div className="flex-1">
+              <span className="font-bold block">Gagal Menambahkan Foto:</span>
+              <p className="mt-0.5 leading-relaxed">{photoError}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Thumbnail Preview Grid dengan Tombol Hapus (SCRUM-89) */}
+        {photos.length > 0 && (
+          <div className="space-y-2 pt-1">
+            <p className="text-xs font-semibold text-slate-700">
+              Pratinjau Foto Terpilih ({photos.length} dari {MAX_PHOTOS}):
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              {photos.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="relative group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col"
+                >
+                  {/* Gambar Thumbnail */}
+                  <div className="relative w-full h-36 bg-slate-100 overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.previewUrl}
+                      alt={item.file.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                    />
+
+                    {/* Tombol Hapus / Batal (Tombol 'X' / Tempat Sampah) */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemovePhoto(item.id);
+                      }}
+                      aria-label={`Hapus foto ${item.file.name}`}
+                      title="Hapus foto ini"
+                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-600/90 hover:bg-red-700 active:bg-red-800 text-white flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
+                    >
+                      {/* Icon Tempat Sampah / X */}
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+
+                    {/* Nomor Urut Foto */}
+                    <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/70 backdrop-blur-xs text-white text-[10px] font-semibold select-none">
+                      Foto #{index + 1}
+                    </span>
+                  </div>
+
+                  {/* Keterangan Berkas */}
+                  <div className="p-2.5 bg-white border-t border-slate-100 flex items-center justify-between gap-2">
+                    <p className="text-xs font-semibold text-slate-800 truncate" title={item.file.name}>
+                      {item.file.name}
+                    </p>
+                    <span className="text-[11px] font-mono text-slate-500 flex-shrink-0">
+                      {(item.file.size / (1024 * 1024)).toFixed(2)} MB
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* =================================================================== */}
