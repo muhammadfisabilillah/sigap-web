@@ -70,11 +70,11 @@ async function AdminDashboard() {
         />
       </div>
 
-      <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-900">Catatan pengembangan</h2>
-        <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+      <div className="mt-8 border border-line bg-card p-5">
+        <h2 className="text-sm font-semibold">Catatan</h2>
+        <p className="mt-1.5 text-sm leading-relaxed text-muted">
           Fondasi autentikasi dan data sudah aktif. Modul verifikasi domisili serta pengelolaan
-          aduan sedang dikerjakan pada sprint berikutnya, sehingga menu di atas belum dapat dibuka.
+          aduan sedang dikerjakan pada sprint berikutnya.
         </p>
       </div>
     </DashboardShell>

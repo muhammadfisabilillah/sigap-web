@@ -19,13 +19,13 @@ type RegisterFormProps = {
 };
 
 const baseInputClass =
-  'w-full rounded-md border px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-2 disabled:bg-slate-50 disabled:text-slate-400';
+  'w-full rounded-md border px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/70 transition-colors focus:outline-none focus:ring-2 disabled:bg-paper disabled:text-muted';
 
 function inputClass(hasError: boolean) {
   return `${baseInputClass} ${
     hasError
       ? 'border-red-300 focus:border-red-500 focus:ring-red-100'
-      : 'border-slate-300 focus:border-[#183B7E] focus:ring-[#183B7E]/15'
+      : 'border-line focus:border-brand focus:ring-brand/15'
   }`;
 }
 
@@ -102,33 +102,18 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
   return (
     <div className="w-full">
       {error ? (
-        <div
+        <p
           role="alert"
           aria-live="polite"
-          className="mb-5 flex items-start gap-3 rounded-md border border-red-200 bg-red-50 p-3.5 text-sm text-red-700"
+          className="mb-5 border-l-2 border-red-500 bg-red-50 px-3.5 py-3 text-sm text-red-800"
         >
-          <svg
-            className="mt-0.5 h-5 w-5 shrink-0 text-red-500"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          <span className="font-medium">{error}</span>
-        </div>
+          {error}
+        </p>
       ) : null}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <div>
-          <label htmlFor="nama" className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label htmlFor="nama" className="mb-1.5 block text-sm font-medium text-ink">
             Nama lengkap
           </label>
           <input
@@ -149,7 +134,7 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
         </div>
 
         <div>
-          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-ink">
             Email
           </label>
           <input
@@ -171,8 +156,8 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
 
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <label htmlFor="noHp" className="mb-1.5 block text-sm font-medium text-slate-700">
-              Nomor HP <span className="font-normal text-slate-400">(opsional)</span>
+            <label htmlFor="noHp" className="mb-1.5 block text-sm font-medium text-ink">
+              Nomor HP <span className="font-normal text-muted">(opsional)</span>
             </label>
             <input
               id="noHp"
@@ -190,9 +175,9 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
           <div>
             <label
               htmlFor="kecamatanId"
-              className="mb-1.5 block text-sm font-medium text-slate-700"
+              className="mb-1.5 block text-sm font-medium text-ink"
             >
-              Kecamatan <span className="font-normal text-slate-400">(opsional)</span>
+              Kecamatan <span className="font-normal text-muted">(opsional)</span>
             </label>
             <select
               id="kecamatanId"
@@ -215,7 +200,7 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
         </div>
 
         <div>
-          <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-ink">
             Kata sandi
           </label>
           <div className="relative">
@@ -232,16 +217,16 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
               }}
               placeholder="Minimal 8 karakter"
               disabled={isLoading}
-              className={`${inputClass(false)} pr-11`}
+              className={`${inputClass(false)} pr-20`}
             />
             <button
               type="button"
               onClick={() => setShowPassword((value) => !value)}
               disabled={isLoading}
               aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-              className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3.5 text-slate-400 transition-colors hover:text-slate-600 focus:outline-none"
+              className="absolute inset-y-0 right-0 cursor-pointer px-3.5 text-xs font-medium text-muted hover:text-ink focus:outline-none"
             >
-              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+              {showPassword ? 'Sembunyi' : 'Lihat'}
             </button>
           </div>
         </div>
@@ -249,7 +234,7 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
         <div>
           <label
             htmlFor="confirmPassword"
-            className="mb-1.5 block text-sm font-medium text-slate-700"
+            className="mb-1.5 block text-sm font-medium text-ink"
           >
             Konfirmasi kata sandi
           </label>
@@ -274,25 +259,18 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
           <button
             type="submit"
             disabled={isLoading}
-            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#132A50] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0d2138] focus:outline-none focus:ring-2 focus:ring-[#132A50]/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full cursor-pointer items-center justify-center rounded-md bg-brand px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isLoading ? (
-              <>
-                <SpinnerIcon />
-                <span>Memproses...</span>
-              </>
-            ) : (
-              'Daftar'
-            )}
+            {isLoading ? 'Memproses...' : 'Daftar'}
           </button>
         </div>
       </form>
 
-      <p className="mt-6 text-center text-sm text-slate-600">
+      <p className="mt-6 text-center text-sm text-muted">
         Sudah punya akun?{' '}
         <Link
           href="/login"
-          className="font-semibold text-[#183B7E] transition-colors hover:text-[#132F66] hover:underline"
+          className="font-semibold text-brand transition-colors hover:text-brand-hover hover:underline"
         >
           Masuk
         </Link>
@@ -301,57 +279,3 @@ export function RegisterForm({ kecamatan }: RegisterFormProps) {
   );
 }
 
-function EyeIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-5 w-5"
-      aria-hidden="true"
-    >
-      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-function EyeOffIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-5 w-5"
-      aria-hidden="true"
-    >
-      <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
-      <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-      <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-      <line x1="2" y1="2" x2="22" y2="22" />
-    </svg>
-  );
-}
-
-function SpinnerIcon() {
-  return (
-    <svg
-      className="h-4 w-4 animate-spin text-white"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z" />
-    </svg>
-  );
-}

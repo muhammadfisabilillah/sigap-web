@@ -74,22 +74,18 @@ async function WargaDashboard() {
       </div>
 
       {pengajuan?.status === 'Ditolak' ? (
-        <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-5">
+        <div className="mt-6 border-l-2 border-red-500 bg-red-50 px-4 py-3">
           <h2 className="text-sm font-semibold text-red-900">Verifikasi domisili ditolak</h2>
-          <p className="mt-1 text-sm text-red-700">
+          <p className="mt-1 text-sm text-red-800">
             {pengajuan.catatan ?? 'Silakan ajukan ulang dengan berkas KTP yang lebih jelas.'}
           </p>
-          <a
-            href="/domisili"
-            className="mt-3 inline-flex rounded-lg bg-red-600 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-red-700"
-          >
+          <a href="/domisili" className="mt-3 inline-block text-sm font-medium text-brand underline">
             Ajukan ulang
           </a>
         </div>
       ) : null}
 
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <ModuleCard
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">        <ModuleCard
           title={pengajuan ? 'Status verifikasi domisili' : 'Ajukan verifikasi domisili'}
           description={
             pengajuan
@@ -113,16 +109,18 @@ async function WargaDashboard() {
         />
       </div>
 
-      <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-900">Langkah mengaktifkan akun</h2>
-        <ol className="mt-3 space-y-2.5 text-sm text-slate-600">
-          <Step done label="Daftar akun SIGAP" />
-          <Step done={Boolean(pengajuan)} label="Ajukan verifikasi domisili (unggah KTP)" />
+      <div className="mt-8 border border-line bg-card p-5">
+        <h2 className="text-sm font-semibold">Langkah mengaktifkan akun</h2>
+        <ol className="mt-3 space-y-2.5 text-sm text-muted">
+          <Step n={1} done label="Daftar akun SIGAP" />
+          <Step n={2} done={Boolean(pengajuan)} label="Ajukan verifikasi domisili (unggah KTP)" />
           <Step
+            n={3}
             done={pengajuan?.status === 'Diterima'}
             label="Petugas kecamatan memverifikasi domisili"
           />
           <Step
+            n={4}
             done={user.statusAkun === 'Terverifikasi'}
             label="Akun aktif — Anda dapat membuat aduan"
           />
@@ -132,18 +130,18 @@ async function WargaDashboard() {
   );
 }
 
-function Step({ done, label }: { done: boolean; label: string }) {
+function Step({ n, done, label }: { n: number; done: boolean; label: string }) {
   return (
-    <li className="flex items-start gap-2.5">
+    <li className="flex items-start gap-3">
       <span
-        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-          done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'
+        className={`flex h-5 w-5 shrink-0 items-center justify-center text-[11px] font-semibold ${
+          done ? 'bg-brand text-white' : 'border border-line text-muted'
         }`}
         aria-hidden="true"
       >
-        {done ? '✓' : '•'}
+        {done ? '✓' : n}
       </span>
-      <span className={done ? 'text-slate-700' : 'text-slate-500'}>{label}</span>
+      <span className={done ? 'text-ink' : ''}>{label}</span>
     </li>
   );
 }

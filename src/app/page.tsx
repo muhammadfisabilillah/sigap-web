@@ -6,7 +6,7 @@ import { homePathForRole } from '@/src/lib/auth/roles';
 
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50">
+    <main className="flex min-h-screen items-center justify-center bg-paper">
       <Suspense fallback={<Splash />}>
         <HomeRedirect />
       </Suspense>
@@ -22,9 +22,9 @@ async function HomeRedirect() {
 
 function Splash() {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="h-11 w-11 animate-pulse rounded-xl bg-[#F59E0B]" />
-      <p className="text-sm font-medium text-slate-500">Memuat SIGAP...</p>
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-sm font-bold tracking-tight text-ink">SIGAP</p>
+      <p className="text-xs text-muted">Memuat...</p>
     </div>
   );
 }

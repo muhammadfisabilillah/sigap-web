@@ -16,28 +16,10 @@ type DomisiliFormProps = {
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
 const MAX_SIZE = 2 * 1024 * 1024;
 
-const STATUS_META: Record<
-  string,
-  { label: string; badge: string; panel: string; title: string }
-> = {
-  Menunggu: {
-    label: 'Menunggu verifikasi',
-    badge: 'bg-amber-50 text-amber-700 border-amber-200',
-    panel: 'border-amber-200 bg-amber-50',
-    title: 'text-amber-900',
-  },
-  Diterima: {
-    label: 'Diterima',
-    badge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    panel: 'border-emerald-200 bg-emerald-50',
-    title: 'text-emerald-900',
-  },
-  Ditolak: {
-    label: 'Ditolak',
-    badge: 'bg-red-50 text-red-700 border-red-200',
-    panel: 'border-red-200 bg-red-50',
-    title: 'text-red-900',
-  },
+const STATUS_META: Record<string, { label: string }> = {
+  Menunggu: { label: 'Menunggu verifikasi' },
+  Diterima: { label: 'Diterima' },
+  Ditolak: { label: 'Ditolak' },
 };
 
 export function DomisiliForm({ pengajuan }: DomisiliFormProps) {
@@ -120,82 +102,74 @@ export function DomisiliForm({ pengajuan }: DomisiliFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="border border-line bg-card p-5 sm:p-6">
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Status pengajuan
-            </p>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="text-xs font-medium text-muted">Status pengajuan</p>
+            <p className="mt-1 text-sm text-muted">
               {pengajuan
                 ? `Diajukan pada ${formatDate(pengajuan.diajukanPada)}`
                 : 'Belum ada berkas domisili yang diajukan.'}
             </p>
           </div>
-          <span
-            className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${
-              meta ? meta.badge : 'border-slate-200 bg-slate-50 text-slate-600'
-            }`}
-          >
-            {meta ? meta.label : 'Belum diajukan'}
-          </span>
+          <p className="text-sm font-semibold text-ink">{meta ? meta.label : 'Belum diajukan'}</p>
         </div>
 
         {pengajuan?.status === 'Ditolak' ? (
-          <div className={`mt-4 rounded-xl border p-4 ${meta?.panel}`}>
-            <h2 className={`text-sm font-semibold ${meta?.title}`}>Pengajuan ditolak</h2>
-            <p className="mt-1 text-sm text-red-700">
+          <div className="mt-4 border-l-2 border-red-500 bg-red-50 px-4 py-3">
+            <h2 className="text-sm font-semibold text-red-900">Pengajuan ditolak</h2>
+            <p className="mt-1 text-sm text-red-800">
               {pengajuan.catatan ?? 'Silakan unggah ulang berkas KTP yang lebih jelas.'}
             </p>
           </div>
         ) : null}
 
         {pengajuan?.status === 'Menunggu' ? (
-          <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          <p className="mt-4 border-l-2 border-amber-500 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             Berkas Anda sedang ditinjau oleh petugas. Anda tetap dapat mengunggah ulang berkas
             apabila ada perbaikan.
           </p>
         ) : null}
 
         {pengajuan?.status === 'Diterima' ? (
-          <p className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+          <p className="mt-4 border-l-2 border-brand bg-green-50 px-4 py-3 text-sm text-brand">
             Domisili Anda sudah terverifikasi. Akun akan aktif setelah status akun diperbarui oleh
             petugas.
           </p>
         ) : null}
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="text-sm font-semibold text-slate-900">
+      <div className="border border-line bg-card p-5 sm:p-6">
+        <h2 className="text-sm font-semibold text-ink">
           {pengajuan ? 'Unggah ulang berkas KTP' : 'Unggah berkas KTP'}
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted">
           Format JPG, PNG, atau PDF. Ukuran maksimal 2 MB. Pastikan seluruh bagian KTP terbaca
           jelas.
         </p>
 
         {error ? (
-          <div
+          <p
             role="alert"
             aria-live="polite"
-            className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+            className="mt-4 border-l-2 border-red-500 bg-red-50 px-3.5 py-3 text-sm text-red-800"
           >
             {error}
-          </div>
+          </p>
         ) : null}
 
         {success ? (
-          <div
+          <p
             role="status"
-            className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800"
+            className="mt-4 border-l-2 border-brand bg-green-50 px-3.5 py-3 text-sm text-brand"
           >
             {success}
-          </div>
+          </p>
         ) : null}
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label htmlFor="file" className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label htmlFor="file" className="mb-1.5 block text-sm font-medium text-ink">
               Berkas KTP
             </label>
             <input
@@ -206,11 +180,11 @@ export function DomisiliForm({ pengajuan }: DomisiliFormProps) {
               accept="image/jpeg,image/png,application/pdf"
               onChange={handleFileChange}
               disabled={isLoading}
-              className="block w-full cursor-pointer rounded-lg border border-slate-300 bg-white text-sm text-slate-600 file:mr-4 file:cursor-pointer file:border-0 file:bg-slate-100 file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-slate-700 hover:file:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+              className="block w-full cursor-pointer rounded-md border border-line bg-white text-sm text-muted file:mr-4 file:cursor-pointer file:border-0 file:bg-paper file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-ink disabled:cursor-not-allowed disabled:opacity-60"
             />
             {file ? (
-              <p className="mt-1.5 text-xs text-slate-500">
-                Dipilih: <span className="font-medium text-slate-700">{file.name}</span> (
+              <p className="mt-1.5 text-xs text-muted">
+                Dipilih: <span className="font-medium text-ink">{file.name}</span> (
                 {formatSize(file.size)})
               </p>
             ) : null}
@@ -219,7 +193,7 @@ export function DomisiliForm({ pengajuan }: DomisiliFormProps) {
           <button
             type="submit"
             disabled={isLoading || !file}
-            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#183B7E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#132F66] focus:outline-none focus:ring-2 focus:ring-[#183B7E]/40 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex cursor-pointer items-center justify-center rounded-md bg-brand px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isLoading ? 'Mengunggah...' : pengajuan ? 'Kirim ulang pengajuan' : 'Kirim pengajuan'}
           </button>
