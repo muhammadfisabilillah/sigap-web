@@ -23,6 +23,12 @@ const SLIDES: Slide[] = [
     caption: 'Kota Surabaya dari udara',
     position: 'object-[50%_55%]',
   },
+  {
+    src: '/images/pexels-branphonegraphy-39142697.jpg',
+    alt: 'Jembatan Suramadu menghubungkan Surabaya dan Madura',
+    caption: 'Jembatan Suramadu — Surabaya ke Madura',
+    position: 'object-[50%_45%]',
+  },
 ];
 
 const INTERVAL_MS = 5000;
