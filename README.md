@@ -127,6 +127,80 @@ Fitur ini menyediakan mekanisme penyaringan dan validasi pengajuan verifikasi do
 
 ---
 
+## 💻 Panduan Menjalankan Aplikasi Secara Lokal (Local Development)
+
+Ikuti langkah-langkah berikut untuk mengonfigurasi dan menjalankan proyek SIGAP di komputer lokal:
+
+### 1. Prasyarat Sistem
+* **Node.js:** Versi 20.x atau lebih baru.
+* **npm:** Versi 10.x atau lebih baru.
+* **PostgreSQL:** PostgreSQL versi 15 ke atas (disarankan menggunakan database PostgreSQL dari Supabase).
+* **Git:** Versi terbaru.
+
+### 2. Kloning Repositori & Pindah ke Branch Development
+```bash
+git clone https://github.com/muhammadfisabilillah/sigap-web.git
+cd sigap-web
+git checkout development
+```
+
+### 3. Instalasi Dependensi
+```bash
+npm install
+```
+> [!NOTE]
+> Perintah `npm install` akan menjalankan skrip *postinstall* `prisma skills sync` secara otomatis untuk menyinkronkan dependensi Prisma ORM.
+
+### 4. Konfigurasi Environment Variables (`.env`)
+Salin file template konfigurasi lingkungan `.env.example` menjadi `.env`:
+```bash
+cp .env.example .env
+```
+Sesuaikan nilai variabel pada file `.env` dengan kredensial PostgreSQL dan Supabase Anda:
+```env
+# URL Koneksi PostgreSQL (Supabase / PostgreSQL Lokal)
+DATABASE_URL="postgresql://postgres:[PASSWORD]@[HOST]:[PORT]/postgres"
+
+# Kredensial Supabase Storage (untuk upload berkas KTP & foto aduan)
+SUPABASE_URL="https://[PROJECT_REF].supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="[SERVICE_ROLE_KEY]"
+```
+
+### 5. Inisialisasi Basis Data & Seeding (Opsional / Database Baru)
+Jika menggunakan database baru, lakukan inisialisasi tabel dan pemuatan data master referensi (Kecamatan Surabaya, Kategori Aduan, dan Instansi):
+```bash
+# Sinkronisasi data contract Prisma ORM
+npm run contract:emit
+
+# Inisialisasi struktur tabel di PostgreSQL
+npx prisma db init
+
+# Seed data referensi Kecamatan Surabaya, Kategori, dan Instansi
+npm run db:seed
+```
+
+### 6. Menjalankan Server Pengembangan
+Jalankan server aplikasi Next.js menggunakan compiler Turbopack:
+```bash
+npm run dev
+```
+Setelah server berjalan, buka browser dan akses aplikasi melalui:
+```
+http://localhost:3000
+```
+
+### 7. Perintah Pengujian & Verifikasi Kualitas Kode
+Sebelum menyerahkan pekerjaan atau membuat *Pull Request* (PR), pastikan seluruh pengecekan lolos:
+```bash
+# Verifikasi linting kode (ESLint)
+npm run lint
+
+# Verifikasi kompilasi dan build produksi (Next.js & TypeScript)
+npm run build
+```
+
+---
+
 ## 🌿 Panduan Alur Kerja Git (Branching Strategy)
 
 Untuk menjaga kerapian repositori dan menghindari konflik kode (*merge conflict*), seluruh anggota tim **wajib** mengikuti aturan berikut.
