@@ -68,9 +68,9 @@ Tujuan: status aduan mengalir berurutan tanpa harus pilih manual dari daftar sem
 
 ## Prioritas 5 — Peta & PWA
 
-- [ ] Integrasi Leaflet + OpenStreetMap: tampilkan titik aduan di peta
-- [ ] PWA: `manifest.webmanifest`, service worker, ikon aplikasi
-- [ ] Uji instalasi PWA di HP Android
+- [x] Integrasi Leaflet + OpenStreetMap: tampilkan titik aduan di peta
+- [x] PWA: `manifest.webmanifest`, service worker, ikon aplikasi
+- [ ] Uji instalasi PWA di HP Android (perlu deploy HTTPS dulu)
 
 ## Prioritas 6 — Rapikan yang Menunggak
 

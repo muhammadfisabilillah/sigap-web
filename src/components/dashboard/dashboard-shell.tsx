@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { SigapLogo } from '@/src/components/brand/sigap-logo';
 import { LogoutButton } from '@/src/components/dashboard/logout-button';
+import { InstallPrompt } from '@/src/components/pwa/install-prompt';
 import type { SessionUser } from '@/src/lib/auth/session';
 
 type NavItem = {
@@ -88,8 +89,9 @@ export function DashboardShell({ user, title, subtitle, children }: DashboardShe
       </main>
 
       <footer className="border-t border-line py-5">
-        <div className="mx-auto max-w-5xl px-4 text-xs text-muted sm:px-6">
-          SIGAP — Sistem Informasi Gerak Aduan Publik, Kota Surabaya
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 text-xs text-muted sm:px-6">
+          <span>SIGAP — Sistem Informasi Gerak Aduan Publik, Kota Surabaya</span>
+          <InstallPrompt />
         </div>
       </footer>
     </div>

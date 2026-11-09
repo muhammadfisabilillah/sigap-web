@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { AduanMap } from '@/src/components/map/aduan-map';
 import { STATUS_ADUAN_LABEL, STATUS_RIWAYAT_LABEL, formatTanggal, type AduanItem } from '@/src/lib/aduan/labels';
 
 export type RiwayatRow = {
@@ -89,6 +90,25 @@ export function AduanDetailBody({
             </div>
           </section>
         ) : null}
+
+        <section className="border border-line bg-card p-5">
+          <h2 className="text-sm font-semibold text-ink">Lokasi di peta</h2>
+          <div className="mt-3">
+            <AduanMap
+              points={[
+                {
+                  id: item.id,
+                  latitude: item.latitude,
+                  longitude: item.longitude,
+                  judul: item.judul,
+                  nomorTiket: item.nomorTiket,
+                  kecamatanNama: item.kecamatanNama,
+                },
+              ]}
+              height={280}
+            />
+          </div>
+        </section>
 
         {action ? (
           <section className="border border-line bg-card p-5">

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
+import { AduanMap } from '@/src/components/map/aduan-map';
 
 type Option = { id: number; nama: string };
 
@@ -319,6 +320,35 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
                 className={inputClass}
               />
             </div>
+          </div>
+
+          <div className="mt-4">
+            <p className="mb-1.5 text-sm font-medium text-ink">Pilih di peta</p>
+            <p className="mb-2 text-xs text-muted">
+              Klik di peta untuk mengisi koordinat, atau gunakan tombol ambil lokasi di atas.
+            </p>
+            <AduanMap
+              points={
+                latitude && longitude
+                  ? [
+                      {
+                        id: 0,
+                        latitude: Number(latitude),
+                        longitude: Number(longitude),
+                        judul: 'Lokasi aduan',
+                        nomorTiket: '-',
+                        kecamatanNama: '-',
+                      },
+                    ]
+                  : []
+              }
+              height={240}
+              onPick={(lat, lng) => {
+                setLatitude(lat.toFixed(6));
+                setLongitude(lng.toFixed(6));
+                setError(null);
+              }}
+            />
           </div>
         </fieldset>
 
