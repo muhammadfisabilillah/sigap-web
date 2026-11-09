@@ -15,7 +15,7 @@ export default function LoginPage() {
         ========================================================================
         PANEL KIRI: HERO & BRANDING SECTION (Desktop Split-screen)
         Sesuai desain Figma:
-        - Background Jembatan Suroboyo / Suramadu dengan tint overlay biru gelap
+        - Background Jembatan Suramadu asli dengan tint overlay biru khas SIGAP
         - Logo SIGAP Surabaya di kiri atas
         - Slogan "Bersama warga, membangun Surabaya yang lebih tanggap." di kiri bawah
         ========================================================================
@@ -24,15 +24,15 @@ export default function LoginPage() {
         {/* Background Image Jembatan dengan Overlay Biru Sesuai Figma */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/suramadu-bridge.svg"
-            alt="Jembatan Suroboyo - SIGAP Surabaya"
+            src="/images/suramadu.jpg"
+            alt="Jembatan Suramadu - SIGAP Surabaya"
             fill
             priority
-            unoptimized
             className="object-cover object-center"
           />
-          {/* Subtle gradient overlay to enhance typography contrast */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0e1e38]/90 via-[#183B7E]/60 to-[#183B7E]/40" />
+          {/* Layer overlay tint & gradient warna biru khas SIGAP */}
+          <div className="absolute inset-0 bg-blue-900/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-blue-950/80 via-transparent to-blue-950/60" />
         </div>
 
         {/* Header Kiri Atas: Logo SIGAP Surabaya */}

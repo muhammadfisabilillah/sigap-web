@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 /**
- * Tipe data untuk nilai input form login
+ * Type for login form values.
  */
 export interface LoginFormValues {
   email: string;
@@ -12,7 +13,7 @@ export interface LoginFormValues {
 }
 
 /**
- * Tipe data untuk status/state form login
+ * State tracking for the form.
  */
 export interface LoginFormState {
   isLoading: boolean;
@@ -21,20 +22,17 @@ export interface LoginFormState {
 }
 
 /**
- * Props untuk komponen LoginForm
+ * Props for the LoginForm component.
  */
 export interface LoginFormProps {
-  /**
-   * Callback opsional ketika form berhasil disubmit
-   */
+  /** Optional callback after successful login */
   onSuccess?: (values: LoginFormValues) => void;
-  /**
-   * Kelas CSS tambahan untuk kontainer form
-   */
+  /** Additional CSS classes for the container */
   className?: string;
 }
 
 export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState<LoginFormValues>({
     email: "",
     password: "",
@@ -48,65 +46,48 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  // Tangani perubahan nilai input
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Reset pesan error saat pengguna mulai mengetik ulang
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (formState.errorMessage) {
-      setFormState((prev) => ({
-        ...prev,
-        errorMessage: null,
-      }));
+      setFormState((prev) => ({ ...prev, errorMessage: null }));
     }
   };
 
-  /**
-   * Mock submit handler
-   * Siap dihubungkan ke Server Action atau Supabase / Auth API.
-   * Catatan sesuai Figma: Ketik "salah" pada password untuk memicu simulasi pesan galat.
-   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    setFormState({
-      isLoading: true,
-      errorMessage: null,
-      isSuccess: false,
-    });
-
+    if (!formData.email || !formData.password) {
+      setFormState({
+        isLoading: false,
+        errorMessage: "Semua field wajib diisi.",
+        isSuccess: false,
+      });
+      return;
+    }
+    setFormState({ isLoading: true, errorMessage: null, isSuccess: false });
     try {
-      // Simulasi delay request jaringan (600ms)
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      // Sesuai petunjuk visual Figma: Ketik "salah" untuk melihat pesan galat
-      if (formData.password.trim().toLowerCase() === "salah") {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        setFormState({ isLoading: false, errorMessage: null, isSuccess: true });
+        if (onSuccess) onSuccess(formData);
+        // Redirect ke dashboard setelah login berhasil
+        router.push("/");
+      } else {
         setFormState({
           isLoading: false,
-          errorMessage: "Email atau kata sandi yang Anda masukkan salah. Silakan coba lagi.",
+          errorMessage: data.error ?? "Login gagal.",
           isSuccess: false,
         });
-        return;
       }
-
-      // Simulasi skenario sukses
+    } catch (_e) {
       setFormState({
         isLoading: false,
-        errorMessage: null,
-        isSuccess: true,
-      });
-
-      if (onSuccess) {
-        onSuccess(formData);
-      }
-    } catch {
-      setFormState({
-        isLoading: false,
-        errorMessage: "Terjadi kesalahan pada sistem. Silakan coba beberapa saat lagi.",
+        errorMessage: "Terjadi kesalahan jaringan.",
         isSuccess: false,
       });
     }
@@ -114,7 +95,7 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
 
   return (
     <div className={`w-full ${className}`}>
-      {/* Banner Pesan Galat / Error Alert */}
+      {/* Error Alert */}
       {formState.errorMessage && (
         <div
           role="alert"
@@ -140,7 +121,7 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
         </div>
       )}
 
-      {/* Banner Pesan Sukses (Mock Feedback) */}
+      {/* Success Banner */}
       {formState.isSuccess && (
         <div
           role="status"
@@ -160,19 +141,14 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
             <polyline points="22 4 12 14.01 9 11.01" />
           </svg>
-          <div className="flex-1 font-medium">
-            Login berhasil! Selamat datang di SIGAP Surabaya.
-          </div>
+          <div className="flex-1 font-medium">Login berhasil! Selamat datang di SIGAP Surabaya.</div>
         </div>
       )}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
-        {/* Input Email */}
+        {/* Email */}
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1.5"
-          >
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
             Email
           </label>
           <div className="relative">
@@ -187,20 +163,15 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
               placeholder="nama@email.com"
               disabled={formState.isLoading}
               className={`w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-colors focus:outline-none focus:ring-2 disabled:bg-gray-50 disabled:text-gray-400 ${
-                formState.errorMessage
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-gray-300 focus:border-[#183B7E] focus:ring-[#183B7E]/20"
+                formState.errorMessage ? "border-red-300 focus:border-red-500 focus:ring-red-200" : "border-gray-300 focus:border-[#183B7E] focus:ring-[#183B7E]/20"
               }`}
             />
           </div>
         </div>
 
-        {/* Input Password */}
+        {/* Password */}
         <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700 mb-1.5"
-          >
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
             Password
           </label>
           <div className="relative">
@@ -215,12 +186,10 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
               placeholder="••••••••"
               disabled={formState.isLoading}
               className={`w-full rounded-lg border px-3.5 py-2.5 pr-11 text-sm text-gray-900 placeholder:text-gray-400 transition-colors focus:outline-none focus:ring-2 disabled:bg-gray-50 disabled:text-gray-400 ${
-                formState.errorMessage
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-gray-300 focus:border-[#183B7E] focus:ring-[#183B7E]/20"
+                formState.errorMessage ? "border-red-300 focus:border-red-500 focus:ring-red-200" : "border-gray-300 focus:border-[#183B7E] focus:ring-[#183B7E]/20"
               }`}
             />
-            {/* Tombol Toggle Show/Hide Password */}
+            {/* Toggle password visibility */}
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
@@ -229,7 +198,6 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
               className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors cursor-pointer"
             >
               {showPassword ? (
-                // Eye Off Icon
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -247,7 +215,6 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
                   <line x1="2" y1="2" x2="22" y2="22" />
                 </svg>
               ) : (
-                // Eye Icon
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -264,15 +231,11 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
                 </svg>
               )}
             </button>
+            <p className="mt-1.5 text-xs text-gray-500">Ketik &quot;salah&quot; untuk melihat pesan galat.</p>
           </div>
-
-          {/* Helper text petunjuk galat sesuai mockup Figma */}
-          <p className="mt-1.5 text-xs text-gray-500">
-            Ketik &quot;salah&quot; untuk melihat pesan galat.
-          </p>
         </div>
 
-        {/* Link Lupa Password */}
+        {/* Forgot password link */}
         <div className="flex justify-end pt-1">
           <Link
             href="/lupa-password"
@@ -282,7 +245,7 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
           </Link>
         </div>
 
-        {/* Tombol Submit "Masuk" */}
+        {/* Submit button */}
         <div className="pt-2">
           <button
             type="submit"
@@ -298,19 +261,8 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                  />
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                 </svg>
                 <span>Memproses...</span>
               </>
@@ -321,13 +273,10 @@ export function LoginForm({ onSuccess, className = "" }: LoginFormProps) {
         </div>
       </form>
 
-      {/* Link Registrasi / Daftar Akun */}
+      {/* Registration link */}
       <div className="mt-6 text-center text-xs sm:text-sm text-gray-600">
-        Belum punya akun?{" "}
-        <Link
-          href="/register"
-          className="font-semibold text-[#183B7E] hover:text-[#132F66] hover:underline transition-colors"
-        >
+        Belum punya akun?{' '}
+        <Link href="/register" className="font-semibold text-[#183B7E] hover:text-[#132F66] hover:underline transition-colors">
           Daftar
         </Link>
       </div>
