@@ -99,7 +99,7 @@ export function UpvoteButton({
       {error ? <span className="text-xs text-red-700">{error}</span> : null}
       {!error ? (
         <span className="text-xs text-muted">
-          {sudahUpvote ? 'Anda mendukung aduan ini.' : 'Dukung aduan penting di kecamatan Anda.'}
+          {sudahUpvote ? 'Anda mendukung aduan ini.' : 'Dukung aduan yang menurut Anda penting.'}
         </span>
       ) : null}
     </span>

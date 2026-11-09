@@ -35,12 +35,6 @@ export async function GET(
       if (aduan.pelaporId === viewer.id) {
         bolehUpvote = false;
         alasan = 'Ini aduan Anda sendiri.';
-      } else if (!viewer.kecamatanId) {
-        bolehUpvote = false;
-        alasan = 'Akun Anda belum memiliki kecamatan. Atur kecamatan Anda di halaman Profil.';
-      } else if (aduan.kecamatanId !== viewer.kecamatanId) {
-        bolehUpvote = false;
-        alasan = 'Anda hanya dapat mendukung aduan di kecamatan Anda.';
       }
     } else {
       bolehUpvote = false;
@@ -95,23 +89,6 @@ export async function POST(
       return NextResponse.json(
         { ok: false, error: 'Anda tidak dapat mendukung aduan Anda sendiri.' },
         { status: 422 },
-      );
-    }
-
-    if (!user.kecamatanId) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            'Akun Anda belum memiliki kecamatan. Atur kecamatan Anda di halaman Profil terlebih dahulu.',
-        },
-        { status: 403 },
-      );
-    }
-    if (aduan.kecamatanId !== user.kecamatanId) {
-      return NextResponse.json(
-        { ok: false, error: 'Anda hanya dapat mendukung aduan di kecamatan Anda.' },
-        { status: 403 },
       );
     }
 

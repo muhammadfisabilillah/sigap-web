@@ -91,7 +91,7 @@ export function ProfilForm({
             ))}
           </select>
           <p className="mt-1 text-xs text-muted">
-            Kecamatan menentukan aduan mana yang bisa Anda dukung. Pastikan sesuai KTP Anda —
+            Kecamatan tercatat untuk keperluan verifikasi domisili Anda. Pastikan sesuai KTP —
             petugas akan memvalidasinya.
           </p>
         </div>
