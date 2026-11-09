@@ -27,7 +27,8 @@ export async function GET(request: Request) {
         : await db.orm.public.Aduan.where({ pelaporId: user.id }).all();
 
     return NextResponse.json({ ok: true, aduan: await enrichAduan(rows as AduanRow[]) });
-  } catch {
+  } catch (error) {
+    console.error('GET /api/aduan gagal:', error);
     return NextResponse.json(
       { ok: false, error: 'Layanan database sedang tidak tersedia. Coba beberapa saat lagi.' },
       { status: 503 },
@@ -104,7 +105,8 @@ export async function POST(request: Request) {
   try {
     kategori = await db.orm.public.Kategori.first({ id: kategoriId });
     kecamatan = await db.orm.public.Kecamatan.first({ id: kecamatanId });
-  } catch {
+  } catch (error) {
+    console.error('POST /api/aduan gagal cek kategori/kecamatan:', error);
     return NextResponse.json(
       { ok: false, error: 'Layanan database sedang tidak tersedia. Coba beberapa saat lagi.' },
       { status: 503 },
@@ -118,12 +120,20 @@ export async function POST(request: Request) {
   }
 
   const fotoUrls: string[] = [];
-  for (const item of validated) {
-    const url = await uploadAduanPhoto(user.id, item.buffer, item.contentType);
-    if (!url) {
-      return NextResponse.json({ ok: false, error: 'Gagal menyimpan foto. Coba lagi.' }, { status: 502 });
+  try {
+    for (const item of validated) {
+      const url = await uploadAduanPhoto(user.id, item.buffer, item.contentType);
+      if (!url) {
+        return NextResponse.json({ ok: false, error: 'Gagal menyimpan foto. Coba lagi.' }, { status: 502 });
+      }
+      fotoUrls.push(url);
     }
-    fotoUrls.push(url);
+  } catch (error) {
+    console.error('POST /api/aduan gagal upload foto:', error);
+    return NextResponse.json(
+      { ok: false, error: 'Gagal menyimpan foto ke penyimpanan. Coba lagi.' },
+      { status: 502 },
+    );
   }
 
   try {
@@ -172,7 +182,8 @@ export async function POST(request: Request) {
       },
       { status: 201 },
     );
-  } catch {
+  } catch (error) {
+    console.error('POST /api/aduan gagal simpan:', error);
     return NextResponse.json(
       { ok: false, error: 'Layanan database sedang tidak tersedia. Coba beberapa saat lagi.' },
       { status: 503 },

@@ -133,7 +133,10 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
         | null;
 
       if (!response.ok || !data?.ok) {
-        setError(data?.error ?? 'Gagal mengirim aduan. Silakan coba lagi.');
+        setError(
+          data?.error ??
+            `Gagal mengirim aduan (kode ${response.status}). Coba lagi, atau lihat pesan error di terminal server.`,
+        );
         return;
       }
 
