@@ -15,11 +15,13 @@ export function AduanDetailBody({
   riwayat,
   action,
   actionTitle = 'Tindakan',
+  upvote,
 }: {
   item: AduanItem;
   riwayat: RiwayatRow[];
   action?: ReactNode;
   actionTitle?: string;
+  upvote?: ReactNode;
 }) {
   const riwayatTerurut = riwayat
     .slice()
@@ -39,6 +41,7 @@ export function AduanDetailBody({
             <div className="text-right">
               <p className="text-xs font-medium text-muted">Dukungan warga</p>
               <p className="mt-0.5 text-lg font-semibold text-ink">{item.totalUpvote}</p>
+              {upvote ? <div className="mt-2 flex justify-end">{upvote}</div> : null}
             </div>
           </div>
 

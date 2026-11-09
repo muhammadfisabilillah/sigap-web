@@ -48,8 +48,8 @@ Branch aktif: `feature/SCRUM-68-auth-ui`
 
 ## Prioritas 4 — Partisipasi & Notifikasi
 
-- [ ] API upvote/unvote (`POST /api/aduan/[id]/upvote`), jaga `totalUpvote` tetap konsisten
-- [ ] Tampilkan jumlah upvote + urutan prioritas di daftar laporan publik
+- [x] API upvote/unvote (`POST /api/aduan/[id]/upvote`), jaga `totalUpvote` tetap konsisten
+- [x] Tampilkan jumlah upvote + urutan prioritas di daftar laporan publik
 - [x] Buat notifikasi saat status aduan berubah
 - [ ] Halaman/icon notifikasi di header (belum dibaca / sudah dibaca)
 
