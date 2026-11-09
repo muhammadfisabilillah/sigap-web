@@ -100,6 +100,33 @@ SIGAP dibangun menggunakan arsitektur berlapis (*Layered / N-Tier Architecture*)
 
 ---
 
+## 🏛️ Fitur: Filter Pengajuan Berdasarkan Kecamatan Petugas (SCRUM-83)
+
+Fitur ini menyediakan mekanisme penyaringan dan validasi pengajuan verifikasi domisili warga yang disesuaikan secara otomatis dengan wilayah tugas Petugas Kecamatan:
+
+### 1. Mekanisme Pemfilteran (*Data Filtering & Scoping*)
+* **Filter Wilayah Otomatis:** Sistem mendeteksi `kecamatanId` pada profil Petugas Kecamatan yang sedang login dan secara ketat hanya menampilkan daftar pengajuan dari warga di kecamatan tersebut (misal: Petugas Gubeng hanya melihat warga Gubeng).
+* **Filter Status Pengajuan:** Tab filter status memudahkan navigasi antara `Semua`, `Menunggu Verifikasi`, `Diterima`, dan `Ditolak` disertai indikator jumlah (*counter badge*).
+* **Pencarian Real-Time:** Fitur pencarian instan untuk menyaring data warga berdasarkan nama pemohon, email, atau nomor telepon.
+* **Ringkasan Statistik Wilayah:** Kartu KPI informatif yang menyajikan total pengajuan wilayah, jumlah yang menunggu tindak lanjut, diterima, serta ditolak.
+
+### 2. Keamanan & Integritas Data (*Security & Authority Guard*)
+* **Proteksi Rute:** Halaman `/petugas` dan `/petugas/domisili` dilindungi sesi autentikasi dan pengecekan peran (`Role: Petugas`).
+* **Validasi Server-Side (Boundary Check):** API `/api/petugas/domisili` memvalidasi kepemilikan kecamatan sebelum memperbarui status pengajuan. Petugas tidak dapat memproses atau memanipulasi pengajuan di luar wilayah kewenangannya.
+
+### 3. Alur Verifikasi Domisili
+1. **Peninjauan Berkas:** Petugas memeriksa foto/dokumen KTP pemohon melalui modal pratinjau.
+2. **Persetujuan (Terima Pengajuan):**
+   * Status pengajuan diperbarui menjadi `Diterima`.
+   * Status akun warga otomatis diperbarui menjadi `Terverifikasi` (*StatusAkun: Terverifikasi*).
+   * Notifikasi konfirmasi otomatis diterbitkan untuk akun warga pemohon.
+3. **Penolakan (Tolak Pengajuan):**
+   * Petugas wajib menginputkan catatan alasan penolakan (misal: foto KTP buram atau alamat tidak sesuai wilayah).
+   * Status pengajuan diperbarui menjadi `Ditolak`.
+   * Notifikasi penolakan beserta catatan diteruskan ke warga sebagai dasar pengajuan ulang.
+
+---
+
 ## 🌿 Panduan Alur Kerja Git (Branching Strategy)
 
 Untuk menjaga kerapian repositori dan menghindari konflik kode (*merge conflict*), seluruh anggota tim **wajib** mengikuti aturan berikut.
