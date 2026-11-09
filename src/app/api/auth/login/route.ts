@@ -25,7 +25,16 @@ export async function POST(request: Request) {
     );
   }
 
-  const user = await db.orm.public.User.where((u) => u.email.eq(email)).first();
+  let user: { id: number; passwordHash: string } | null = null;
+  try {
+    user = await db.orm.public.User.where((u) => u.email.eq(email)).first();
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: 'Layanan database sedang tidak tersedia. Coba beberapa saat lagi.' },
+      { status: 503 },
+    );
+  }
+
   if (!user || !verifyPassword(password, user.passwordHash)) {
     return NextResponse.json({ ok: false, error: 'Email atau password salah' }, { status: 401 });
   }

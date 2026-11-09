@@ -1,19 +1,16 @@
 import { redirect } from 'next/navigation';
 import { getSessionUser, type SessionUser } from './session';
+import { homePathForRole, isUserRole, type UserRole } from './roles';
 
-export type Role = 'Warga' | 'Admin' | 'Petugas';
+export type Role = UserRole;
 
-export function isRole(value: string): value is Role {
-  return value === 'Warga' || value === 'Admin' || value === 'Petugas';
-}
+export { isUserRole };
 
 export async function requireRole(role: Role): Promise<SessionUser> {
   const user = await getSessionUser();
   if (!user) redirect('/login');
-  if (!isRole(user.role)) redirect('/login');
-  if (user.role !== role) {
-    redirect(user.role === 'Admin' ? '/admin' : user.role === 'Petugas' ? '/petugas' : '/warga');
-  }
+  if (!isUserRole(user.role)) redirect('/login');
+  if (user.role !== role) redirect(homePathForRole(user.role));
   return user;
 }
 

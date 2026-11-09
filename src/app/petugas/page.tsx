@@ -1,0 +1,96 @@
+import type { Metadata } from 'next';
+import { Suspense } from 'react';
+import { connection } from 'next/server';
+import { DashboardShell } from '@/src/components/dashboard/dashboard-shell';
+import { ModuleCard, StatCard } from '@/src/components/dashboard/dashboard-cards';
+import { PageSkeleton } from '@/src/components/dashboard/page-skeleton';
+import { requireRole } from '@/src/lib/auth/guard';
+import { db } from '@/src/prisma/db';
+
+export const metadata: Metadata = {
+  title: 'Dasbor Petugas',
+};
+
+export default function PetugasPage() {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <PetugasDashboard />
+    </Suspense>
+  );
+}
+
+const STATUS_AKTIF = new Set(['DiteruskanKecamatan', 'MenungguTinjauan']);
+
+async function PetugasDashboard() {
+  await connection();
+  const user = await requireRole('Petugas');
+
+  const kecamatan = user.kecamatanId
+    ? await db.orm.public.Kecamatan.first({ id: user.kecamatanId })
+    : null;
+
+  const aduanWilayah = user.kecamatanId
+    ? await db.orm.public.Aduan.where({ kecamatanId: user.kecamatanId }).all()
+    : [];
+
+  const aduanAktif = aduanWilayah.filter((aduan) => STATUS_AKTIF.has(aduan.status));
+
+  return (
+    <DashboardShell
+      user={user}
+      title="Dasbor Petugas Kecamatan"
+      subtitle={
+        kecamatan
+          ? `Wilayah kerja: Kecamatan ${kecamatan.nama}.`
+          : 'Wilayah kerja belum ditetapkan. Hubungi admin untuk penugasan kecamatan.'
+      }
+    >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatCard
+          label="Aduan wilayah"
+          value={aduanWilayah.length}
+          hint={kecamatan ? `Kecamatan ${kecamatan.nama}` : 'Belum ada wilayah'}
+        />
+        <StatCard
+          label="Perlu tindak lanjut"
+          value={aduanAktif.length}
+          tone="warning"
+          hint="Aduan yang diteruskan ke kecamatan."
+        />
+        <StatCard
+          label="Verifikasi domisili"
+          value="—"
+          tone="default"
+          hint="Modul verifikasi segera tersedia."
+        />
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <ModuleCard
+          title="Aduan wilayah"
+          description="Lihat aduan yang masuk ke kecamatan Anda dan perbarui progres penanganan lapangan."
+        />
+        <ModuleCard
+          title="Validasi domisili"
+          description="Validasi kebenaran domisili warga di wilayah kecamatan Anda."
+        />
+        <ModuleCard
+          title="Riwayat tindak lanjut"
+          description="Jejak perubahan status aduan yang Anda tangani."
+        />
+        <ModuleCard
+          title="Notifikasi"
+          description="Pemberitahuan aduan baru yang diteruskan ke wilayah Anda."
+        />
+      </div>
+
+      <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-sm font-semibold text-slate-900">Catatan pengembangan</h2>
+        <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+          Dasbor petugas sudah terlindungi sesuai peran. Modul tindak lanjut aduan dan validasi
+          domisili akan diaktifkan pada sprint berikutnya.
+        </p>
+      </div>
+    </DashboardShell>
+  );
+}

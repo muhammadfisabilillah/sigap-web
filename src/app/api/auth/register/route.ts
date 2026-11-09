@@ -32,34 +32,60 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: errors.join('; ') }, { status: 422 });
   }
 
-  const existing = await db.orm.public.User.where((u) => u.email.eq(email!)).first();
-  if (existing) {
-    return NextResponse.json({ ok: false, error: 'Email sudah terdaftar' }, { status: 409 });
-  }
-
-  let kecamatanId: number | undefined;
-  if (body.kecamatanId !== undefined) {
-    const kecamatan = await db.orm.public.Kecamatan.first({ id: body.kecamatanId });
-    if (!kecamatan) {
-      return NextResponse.json({ ok: false, error: 'Kecamatan tidak ditemukan' }, { status: 422 });
+  try {
+    const existing = await db.orm.public.User.where((u) => u.email.eq(email!)).first();
+    if (existing) {
+      return NextResponse.json({ ok: false, error: 'Email sudah terdaftar' }, { status: 409 });
     }
-    kecamatanId = body.kecamatanId;
+
+    let kecamatanId: number | undefined;
+    if (body.kecamatanId !== undefined) {
+      const kecamatan = await db.orm.public.Kecamatan.first({ id: body.kecamatanId });
+      if (!kecamatan) {
+        return NextResponse.json({ ok: false, error: 'Kecamatan tidak ditemukan' }, { status: 422 });
+      }
+      kecamatanId = body.kecamatanId;
+    }
+
+    await db.orm.public.User.create({
+      nama: nama!,
+      email: email!,
+      passwordHash: hashPassword(password!),
+      role: 'Warga',
+      statusAkun: 'BelumTerverifikasi',
+      noHp: body.noHp?.trim() || null,
+      kecamatanId: kecamatanId ?? null,
+    });
+
+    const created = await db.orm.public.User.where((u) => u.email.eq(email!)).first();
+    if (!created) {
+      return NextResponse.json(
+        { ok: false, error: 'Registrasi gagal. Silakan coba lagi.' },
+        { status: 500 },
+      );
+    }
+
+    await issueSession(created.id);
+
+    return NextResponse.json(
+      {
+        ok: true,
+        user: {
+          id: created.id,
+          nama: created.nama,
+          email: created.email,
+          role: created.role,
+          statusAkun: created.statusAkun,
+          kecamatanId: created.kecamatanId ?? null,
+        },
+        message: 'Registrasi berhasil. Silakan ajukan verifikasi domisili.',
+      },
+      { status: 201 },
+    );
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: 'Layanan database sedang tidak tersedia. Coba beberapa saat lagi.' },
+      { status: 503 },
+    );
   }
-
-  await db.orm.public.User.create({
-    nama: nama!,
-    email: email!,
-    passwordHash: hashPassword(password!),
-    role: 'Warga',
-    statusAkun: 'BelumTerverifikasi',
-    noHp: body.noHp?.trim() || null,
-    kecamatanId: kecamatanId ?? null,
-  });
-
-  await issueSession((await db.orm.public.User.where((u) => u.email.eq(email!)).first())!.id);
-
-  return NextResponse.json(
-    { ok: true, message: 'Registrasi berhasil. Silakan ajukan verifikasi domisili.' },
-    { status: 201 },
-  );
 }
