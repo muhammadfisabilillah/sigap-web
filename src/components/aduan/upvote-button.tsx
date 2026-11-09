@@ -1,18 +1,19 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function UpvoteButton({
   aduanId,
   initialTotal,
-  compact = false,
 }: {
   aduanId: number;
   initialTotal: number;
-  compact?: boolean;
 }) {
   const [total, setTotal] = useState(initialTotal);
   const [sudahUpvote, setSudahUpvote] = useState(false);
+  const [bolehUpvote, setBolehUpvote] = useState(true);
+  const [alasan, setAlasan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,11 +21,21 @@ export function UpvoteButton({
     let cancelled = false;
     fetch(`/api/aduan/${aduanId}/upvote`)
       .then((response) => response.json())
-      .then((data: { ok?: boolean; sudahUpvote?: boolean; totalUpvote?: number }) => {
-        if (cancelled || !data?.ok) return;
-        setSudahUpvote(Boolean(data.sudahUpvote));
-        if (typeof data.totalUpvote === 'number') setTotal(data.totalUpvote);
-      })
+      .then(
+        (data: {
+          ok?: boolean;
+          sudahUpvote?: boolean;
+          totalUpvote?: number;
+          bolehUpvote?: boolean;
+          alasan?: string | null;
+        }) => {
+          if (cancelled || !data?.ok) return;
+          setSudahUpvote(Boolean(data.sudahUpvote));
+          if (typeof data.totalUpvote === 'number') setTotal(data.totalUpvote);
+          setBolehUpvote(data.bolehUpvote !== false);
+          setAlasan(data.alasan ?? null);
+        },
+      )
       .catch(() => {
         // Status upvote tidak diketahui — tombol tetap bisa diklik.
       });
@@ -55,6 +66,21 @@ export function UpvoteButton({
     }
   }
 
+  if (!bolehUpvote) {
+    return (
+      <span className="inline-flex flex-col items-start gap-1">
+        <span className="text-sm text-muted">
+          Dukungan: {total} · {alasan ?? 'Tidak dapat mendukung aduan ini.'}
+        </span>
+        {alasan?.includes('Profil') ? (
+          <Link href="/warga/profil" className="text-xs font-medium text-brand hover:underline">
+            Atur kecamatan di Profil
+          </Link>
+        ) : null}
+      </span>
+    );
+  }
+
   return (
     <span className="inline-flex flex-col items-start gap-1">
       <button
@@ -71,7 +97,7 @@ export function UpvoteButton({
         {isLoading ? 'Memproses...' : sudahUpvote ? 'Didukung' : 'Dukung'} · {total}
       </button>
       {error ? <span className="text-xs text-red-700">{error}</span> : null}
-      {!compact && !error ? (
+      {!error ? (
         <span className="text-xs text-muted">
           {sudahUpvote ? 'Anda mendukung aduan ini.' : 'Dukung aduan penting di kecamatan Anda.'}
         </span>

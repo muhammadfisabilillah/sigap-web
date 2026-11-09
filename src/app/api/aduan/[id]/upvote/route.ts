@@ -28,10 +28,31 @@ export async function GET(
     if (!aduan) {
       return NextResponse.json({ ok: false, error: 'Aduan tidak ditemukan' }, { status: 404 });
     }
+
+    let bolehUpvote = true;
+    let alasan: string | null = null;
+    if (viewer.role === 'Warga') {
+      if (aduan.pelaporId === viewer.id) {
+        bolehUpvote = false;
+        alasan = 'Ini aduan Anda sendiri.';
+      } else if (!viewer.kecamatanId) {
+        bolehUpvote = false;
+        alasan = 'Akun Anda belum memiliki kecamatan. Atur kecamatan Anda di halaman Profil.';
+      } else if (aduan.kecamatanId !== viewer.kecamatanId) {
+        bolehUpvote = false;
+        alasan = 'Anda hanya dapat mendukung aduan di kecamatan Anda.';
+      }
+    } else {
+      bolehUpvote = false;
+      alasan = 'Hanya warga yang dapat mendukung aduan.';
+    }
+
     return NextResponse.json({
       ok: true,
       totalUpvote: aduan.totalUpvote,
       sudahUpvote: await getUpvoteState(aduanId, viewer.id),
+      bolehUpvote,
+      alasan,
     });
   } catch (error) {
     console.error('GET upvote gagal:', error);
@@ -77,7 +98,17 @@ export async function POST(
       );
     }
 
-    if (!user.kecamatanId || aduan.kecamatanId !== user.kecamatanId) {
+    if (!user.kecamatanId) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            'Akun Anda belum memiliki kecamatan. Atur kecamatan Anda di halaman Profil terlebih dahulu.',
+        },
+        { status: 403 },
+      );
+    }
+    if (aduan.kecamatanId !== user.kecamatanId) {
       return NextResponse.json(
         { ok: false, error: 'Anda hanya dapat mendukung aduan di kecamatan Anda.' },
         { status: 403 },
