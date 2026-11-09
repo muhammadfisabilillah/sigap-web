@@ -47,7 +47,7 @@ export function AduanMap({
       if (!mapRef.current) {
         const map = L.map(containerRef.current, { scrollWheelZoom: false });
         mapRef.current = map;
-        L.tileLayer('https://tile.openstreetmap.org/{z}/x/{y}/{z}.png', {
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
           maxZoom: 19,
