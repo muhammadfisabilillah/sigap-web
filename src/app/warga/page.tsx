@@ -5,6 +5,7 @@ import { DashboardShell } from '@/src/components/dashboard/dashboard-shell';
 import { ModuleCard, StatCard } from '@/src/components/dashboard/dashboard-cards';
 import { PageSkeleton } from '@/src/components/dashboard/page-skeleton';
 import { ActivationTimeline } from '@/src/components/dashboard/activation-timeline';
+import { OnboardingModal } from '@/src/components/onboarding/onboarding-modal';
 import { requireRole } from '@/src/lib/auth/guard';
 import { db } from '@/src/prisma/db';
 
@@ -61,6 +62,8 @@ async function WargaDashboard() {
           : { label: 'Verifikasi Domisili', href: '/domisili' }
       }
     >
+      <OnboardingModal />
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
           label="Status akun"

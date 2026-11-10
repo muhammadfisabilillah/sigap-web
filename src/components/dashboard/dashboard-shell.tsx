@@ -17,6 +17,7 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
     { label: 'Domisili', href: '/domisili' },
     { label: 'Aduan Saya', href: '/warga/aduan' },
     { label: 'Laporan Publik', href: '/warga/laporan-publik' },
+    { label: 'Panduan', href: '/panduan' },
     { label: 'Profil', href: '/warga/profil' },
   ],
   Admin: [
