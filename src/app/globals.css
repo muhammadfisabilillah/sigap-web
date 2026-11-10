@@ -9,6 +9,9 @@
   --color-brand: #0f3d2e;
   --color-brand-hover: #0a2e22;
   --color-accent: #b7791f;
+  --color-brand-soft: #eef5f1;
+  --color-amber-soft: #fbf3e4;
+  --color-green-soft: #edf6ef;
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -18,7 +21,9 @@
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: radial-gradient(circle at 1px 1px, rgba(25, 29, 26, 0.08) 1px, transparent 0);
+  background-size: 18px 18px;
   color: var(--foreground);
   font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }

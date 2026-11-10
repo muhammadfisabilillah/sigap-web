@@ -86,6 +86,7 @@ async function WargaDashboard() {
       ) : null}
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">        <ModuleCard
+          index={0}
           title={pengajuan ? 'Status verifikasi domisili' : 'Ajukan verifikasi domisili'}
           description={
             pengajuan
@@ -96,18 +97,21 @@ async function WargaDashboard() {
           cta={pengajuan ? 'Lihat status' : 'Mulai verifikasi'}
         />
         <ModuleCard
+          index={1}
           title="Buat aduan baru"
           description="Laporkan masalah di lingkungan Anda lengkap dengan foto dan titik lokasi GPS."
           href="/warga/aduan/baru"
           cta="Buat aduan"
         />
         <ModuleCard
+          index={2}
           title="Aduan saya"
           description="Riwayat dan progres penanganan aduan yang pernah Anda kirim."
           href="/warga/aduan"
           cta="Lihat aduan saya"
         />
         <ModuleCard
+          index={3}
           title="Laporan publik"
           description="Lihat aduan dari warga Surabaya dan pantau penanganannya."
           href="/warga/laporan-publik"

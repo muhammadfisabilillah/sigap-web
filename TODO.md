@@ -88,3 +88,33 @@ Tujuan: status aduan mengalir berurutan tanpa harus pilih manual dari daftar sem
 - [ ] Jalankan `npm run lint` dan `npm run build` sebelum setiap PR
 - [ ] Buat PR ke `development` dengan judul `SCRUM-<id> <deskripsi>`, jangan langsung ke `main`
 - [ ] Deploy ke Vercel / host pilihan dan catat URL-nya di README
+
+---
+
+## Prioritas 8 — Finalisasi (pasca-responsi dosen)
+
+Feedback dosen: tampilan dinilai terlalu polos/kosong → sudah ditambahkan banner foto skyline, stat card berwarna, kartu modul dengan aksen, pola latar titik, dan footer lengkap.
+
+### Rapikan konten & data
+
+- [ ] Hapus/bersihkan data test (aduan "fafafa…", "test tiga foto", akun e2e, akun petugas duplikat) dari database sebelum presentasi
+- [ ] Ganti password semua akun demo (admin@sigap.test, petugas*.sigap.test) sebelum rilis resmi
+- [ ] Kompres foto `pexels-pamanjoe-21896936.jpg` (±5 MB) agar repo ringan
+- [ ] Perbarui `AGENTS.md` — status implementasi sudah jauh berkembang
+
+### Penyempurnaan UI (lanjutan masukan dosen)
+
+- [ ] Screenshot semua halaman utama untuk bahan PPT presentasi (login, register, dashboard 3 role, form aduan, detail aduan, laporan publik)
+- [ ] Tambah ilustrasi/empty-state di halaman yang kosong (mis. "Belum ada aduan" dengan gambar)
+- [ ] Cek kontras teks & ukuran font pada layar proyektor (min. 16px untuk body)
+
+### Rilis & presentasi
+
+- [ ] Merge PR #7 ke `development` setelah direview tim
+- [ ] Deploy ke Vercel (+ set env: DATABASE_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+- [ ] Uji instalasi PWA di HP Android dari URL production (HTTPS)
+- [ ] Catat URL production di README.md dan di Jira SCRUM-68
+- [ ] Merge `development` → `main` menjelang hari presentasi
+- [ ] Latihan demo 10 menit: register warga baru → upload KTP → admin verifikasi → warga buat aduan → admin proses → petugas tindak lanjut → warga lihat status/selesai
+- [ ] Siapkan fallback offline/screenshot apabila WiFi kampus bermasalah saat demo
+- [ ] Update TODO.md sebagai lampiran progress ke Jira

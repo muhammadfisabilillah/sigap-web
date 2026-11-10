@@ -53,22 +53,26 @@ async function AdminDashboard() {
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <ModuleCard
+          index={0}
           title="Verifikasi domisili"
           description="Tinjau berkas KTP warga, terima atau tolak pengajuan beserta catatannya."
           href="/admin/verifikasi-domisili"
           cta="Verifikasi sekarang"
         />
         <ModuleCard
+          index={1}
           title="Kelola aduan"
           description="Periksa kelayakan aduan, teruskan ke instansi atau petugas kecamatan."
           href="/admin/aduan"
           cta="Kelola aduan"
         />
         <ModuleCard
+          index={2}
           title="Data instansi"
           description="Kelola daftar instansi tujuan penerusan aduan."
         />
         <ModuleCard
+          index={3}
           title="Laporan & statistik"
           description="Rekap aduan per kategori, kecamatan, dan status penanganan."
         />

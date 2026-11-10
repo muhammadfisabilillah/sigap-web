@@ -70,22 +70,26 @@ async function PetugasDashboard() {
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <ModuleCard
+          index={0}
           title="Aduan wilayah"
           description="Lihat aduan yang masuk ke kecamatan Anda dan perbarui progres penanganan lapangan."
           href="/petugas/aduan"
           cta="Lihat aduan wilayah"
         />
         <ModuleCard
+          index={1}
           title="Validasi domisili"
           description="Validasi kebenaran domisili warga di wilayah kecamatan Anda."
           href="/petugas/verifikasi-domisili"
           cta="Verifikasi sekarang"
         />
         <ModuleCard
+          index={2}
           title="Riwayat tindak lanjut"
           description="Jejak perubahan status aduan yang Anda tangani. Tersedia di detail tiap aduan."
         />
         <ModuleCard
+          index={3}
           title="Notifikasi"
           description="Pemberitahuan aduan baru yang diteruskan ke wilayah Anda."
         />
