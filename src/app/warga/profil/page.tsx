@@ -73,18 +73,18 @@ async function Profil() {
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
         {/* Identitas */}
         <section className="overflow-hidden rounded-2xl border border-line bg-card shadow-sm lg:col-span-2">
-          <div className="relative h-24">
+          <div className="relative h-36">
             <Image
               src="/images/Surabaya.jpg"
               alt="Ikon Kota Surabaya"
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
-              className="object-cover object-[50%_35%]"
+              className="object-cover object-[50%_50%]"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#08192b]/90 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#08192b]/90 via-[#08192b]/30 to-transparent" />
           </div>
 
-          <div className="-mt-10 flex flex-col items-start p-5 sm:p-6">
+          <div className="-mt-8 flex flex-col items-start p-5 sm:p-6">
             <div
               className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-4 border-card bg-brand text-2xl font-bold text-white shadow-md"
               aria-hidden="true"
