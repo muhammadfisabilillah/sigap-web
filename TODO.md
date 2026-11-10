@@ -105,6 +105,7 @@ Tujuan: status aduan mengalir berurutan tanpa harus pilih manual dari daftar sem
 - [x] Tambah halaman lupa kata sandi (form login sebelumnya menautkannya, tapi halamannya belum ada)
 - [x] Bucket KTP di Supabase dibuat publik — ubah jadi privat + signed URL
 - [ ] Perbarui `AGENTS.md` bila status implementasi berubah lagi
+- [ ] NIK otomatis terbaca dari KTP saat verifikasi (OCR) — sekarang input manual di halaman Profil
 
 ## Prioritas 7 — Uji & Rilis
 

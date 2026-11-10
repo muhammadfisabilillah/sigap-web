@@ -1,0 +1,2294 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.Aduan",
+    "label": "Create table \"Aduan\"",
+    "summary": "Creates table \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Aduan\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Aduan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Aduan\"",
+        "sql": "CREATE TABLE \"public\".\"Aduan\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"deskripsi\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"instansiId\" int4,\n  \"judul\" text NOT NULL,\n  \"kategoriId\" int4 NOT NULL,\n  \"kecamatanId\" int4 NOT NULL,\n  \"latitude\" float8 NOT NULL,\n  \"longitude\" float8 NOT NULL,\n  \"nomorTiket\" text NOT NULL,\n  \"pelaporId\" int4 NOT NULL,\n  \"status\" text DEFAULT 'MenungguVerifikasi' NOT NULL,\n  \"totalUpvote\" int4 DEFAULT 0 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"Aduan_status_check_89dfb16a\" CHECK (\"status\" IN ('MenungguVerifikasi', 'Diproses', 'DiteruskanKecamatan', 'MenungguTinjauan', 'Selesai', 'Ditolak'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Aduan\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Aduan\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.FotoAduan",
+    "label": "Create table \"FotoAduan\"",
+    "summary": "Creates table \"FotoAduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "FotoAduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"FotoAduan\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"FotoAduan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"FotoAduan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"FotoAduan\"",
+        "sql": "CREATE TABLE \"public\".\"FotoAduan\" (\n  \"aduanId\" int4 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"url\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"FotoAduan\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"FotoAduan\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"FotoAduan\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Instansi",
+    "label": "Create table \"Instansi\"",
+    "summary": "Creates table \"Instansi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Instansi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Instansi\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Instansi\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Instansi\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Instansi\"",
+        "sql": "CREATE TABLE \"public\".\"Instansi\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"nama\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Instansi\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Instansi\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Instansi\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Kategori",
+    "label": "Create table \"Kategori\"",
+    "summary": "Creates table \"Kategori\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Kategori"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Kategori\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Kategori\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Kategori\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Kategori\"",
+        "sql": "CREATE TABLE \"public\".\"Kategori\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"nama\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Kategori\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Kategori\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Kategori\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Kecamatan",
+    "label": "Create table \"Kecamatan\"",
+    "summary": "Creates table \"Kecamatan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Kecamatan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Kecamatan\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Kecamatan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Kecamatan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Kecamatan\"",
+        "sql": "CREATE TABLE \"public\".\"Kecamatan\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"nama\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Kecamatan\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Kecamatan\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Kecamatan\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Notifikasi",
+    "label": "Create table \"Notifikasi\"",
+    "summary": "Creates table \"Notifikasi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Notifikasi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Notifikasi\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Notifikasi\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Notifikasi\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Notifikasi\"",
+        "sql": "CREATE TABLE \"public\".\"Notifikasi\" (\n  \"aduanId\" int4,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"dibaca\" bool DEFAULT false NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"judul\" text NOT NULL,\n  \"pesan\" text NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Notifikasi\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Notifikasi\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Notifikasi\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.RiwayatStatus",
+    "label": "Create table \"RiwayatStatus\"",
+    "summary": "Creates table \"RiwayatStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "RiwayatStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"RiwayatStatus\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"RiwayatStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"RiwayatStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"RiwayatStatus\"",
+        "sql": "CREATE TABLE \"public\".\"RiwayatStatus\" (\n  \"aduanId\" int4 NOT NULL,\n  \"catatan\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"olehId\" int4 NOT NULL,\n  \"status\" text NOT NULL,\n  \"statusAduan\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"RiwayatStatus_statusAduan_check_8b682ad5\" CHECK (\"statusAduan\" IN ('MenungguVerifikasi', 'Diproses', 'DiteruskanKecamatan', 'MenungguTinjauan', 'Selesai', 'Ditolak')),\n  CONSTRAINT \"RiwayatStatus_status_check_004ac9c9\" CHECK (\"status\" IN ('Dibuat', 'Diverifikasi', 'Dikembalikan', 'Diteruskan', 'DitindakLanjuti', 'DitetapkanSelesai'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"RiwayatStatus\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"RiwayatStatus\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"RiwayatStatus\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Session",
+    "label": "Create table \"Session\"",
+    "summary": "Creates table \"Session\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Session"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Session\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Session\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Session\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Session\"",
+        "sql": "CREATE TABLE \"public\".\"Session\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"expiresAt\" timestamptz NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"tokenHash\" text NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Session\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Session\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Session\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Upvote",
+    "label": "Create table \"Upvote\"",
+    "summary": "Creates table \"Upvote\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Upvote"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Upvote\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Upvote\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Upvote\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Upvote\"",
+        "sql": "CREATE TABLE \"public\".\"Upvote\" (\n  \"aduanId\" int4 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Upvote\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Upvote\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Upvote\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.User",
+    "label": "Create table \"User\"",
+    "summary": "Creates table \"User\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"User\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"User\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"User\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"User\"",
+        "sql": "CREATE TABLE \"public\".\"User\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"kecamatanId\" int4,\n  \"nama\" text NOT NULL,\n  \"noHp\" text,\n  \"passwordHash\" text NOT NULL,\n  \"role\" text DEFAULT 'Warga' NOT NULL,\n  \"statusAkun\" text DEFAULT 'BelumTerverifikasi' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"User_role_check_cc221145\" CHECK (\"role\" IN ('Warga', 'Admin', 'Petugas')),\n  CONSTRAINT \"User_statusAkun_check_b8e109b6\" CHECK (\"statusAkun\" IN ('BelumTerverifikasi', 'MenungguVerifikasi', 'Terverifikasi'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"User\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"User\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"User\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.VerifikasiDomisili",
+    "label": "Create table \"VerifikasiDomisili\"",
+    "summary": "Creates table \"VerifikasiDomisili\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "VerifikasiDomisili"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"VerifikasiDomisili\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"VerifikasiDomisili\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"VerifikasiDomisili\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"VerifikasiDomisili\"",
+        "sql": "CREATE TABLE \"public\".\"VerifikasiDomisili\" (\n  \"catatan\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"fileKtpUrl\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"status\" text DEFAULT 'Menunggu' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"VerifikasiDomisili_status_check_60e8bb19\" CHECK (\"status\" IN ('Menunggu', 'Diterima', 'Ditolak'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"VerifikasiDomisili\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"VerifikasiDomisili\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"VerifikasiDomisili\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "unique.Aduan.Aduan_nomorTiket_key",
+    "label": "Add unique constraint on \"Aduan\" (nomorTiket)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Aduan_nomorTiket_key",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Aduan_nomorTiket_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Aduan_nomorTiket_key",
+          "public",
+          "\"public\".\"Aduan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Aduan_nomorTiket_key\" on \"Aduan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Aduan_nomorTiket_key\"",
+        "sql": "ALTER TABLE \"public\".\"Aduan\" ADD CONSTRAINT \"Aduan_nomorTiket_key\" UNIQUE (\"nomorTiket\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Aduan_nomorTiket_key\" exists on (nomorTiket)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Aduan_nomorTiket_key",
+          "public",
+          "\"public\".\"Aduan\"",
+          "u",
+          "[\"nomorTiket\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Instansi.Instansi_nama_key",
+    "label": "Add unique constraint on \"Instansi\" (nama)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Instansi_nama_key",
+        "table": "Instansi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Instansi_nama_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Instansi_nama_key",
+          "public",
+          "\"public\".\"Instansi\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Instansi_nama_key\" on \"Instansi\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Instansi_nama_key\"",
+        "sql": "ALTER TABLE \"public\".\"Instansi\" ADD CONSTRAINT \"Instansi_nama_key\" UNIQUE (\"nama\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Instansi_nama_key\" exists on (nama)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Instansi_nama_key",
+          "public",
+          "\"public\".\"Instansi\"",
+          "u",
+          "[\"nama\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Kategori.Kategori_nama_key",
+    "label": "Add unique constraint on \"Kategori\" (nama)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Kategori_nama_key",
+        "table": "Kategori"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Kategori_nama_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Kategori_nama_key",
+          "public",
+          "\"public\".\"Kategori\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Kategori_nama_key\" on \"Kategori\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Kategori_nama_key\"",
+        "sql": "ALTER TABLE \"public\".\"Kategori\" ADD CONSTRAINT \"Kategori_nama_key\" UNIQUE (\"nama\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Kategori_nama_key\" exists on (nama)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Kategori_nama_key",
+          "public",
+          "\"public\".\"Kategori\"",
+          "u",
+          "[\"nama\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Kecamatan.Kecamatan_nama_key",
+    "label": "Add unique constraint on \"Kecamatan\" (nama)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Kecamatan_nama_key",
+        "table": "Kecamatan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Kecamatan_nama_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Kecamatan_nama_key",
+          "public",
+          "\"public\".\"Kecamatan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Kecamatan_nama_key\" on \"Kecamatan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Kecamatan_nama_key\"",
+        "sql": "ALTER TABLE \"public\".\"Kecamatan\" ADD CONSTRAINT \"Kecamatan_nama_key\" UNIQUE (\"nama\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Kecamatan_nama_key\" exists on (nama)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Kecamatan_nama_key",
+          "public",
+          "\"public\".\"Kecamatan\"",
+          "u",
+          "[\"nama\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Session.Session_tokenHash_key",
+    "label": "Add unique constraint on \"Session\" (tokenHash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Session_tokenHash_key",
+        "table": "Session"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Session_tokenHash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Session_tokenHash_key",
+          "public",
+          "\"public\".\"Session\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Session_tokenHash_key\" on \"Session\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Session_tokenHash_key\"",
+        "sql": "ALTER TABLE \"public\".\"Session\" ADD CONSTRAINT \"Session_tokenHash_key\" UNIQUE (\"tokenHash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Session_tokenHash_key\" exists on (tokenHash)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Session_tokenHash_key",
+          "public",
+          "\"public\".\"Session\"",
+          "u",
+          "[\"tokenHash\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Upvote.Upvote_aduanId_userId_key",
+    "label": "Add unique constraint on \"Upvote\" (aduanId, userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Upvote_aduanId_userId_key",
+        "table": "Upvote"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Upvote_aduanId_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Upvote_aduanId_userId_key",
+          "public",
+          "\"public\".\"Upvote\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Upvote_aduanId_userId_key\" on \"Upvote\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Upvote_aduanId_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"Upvote\" ADD CONSTRAINT \"Upvote_aduanId_userId_key\" UNIQUE (\"aduanId\", \"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Upvote_aduanId_userId_key\" exists on (aduanId, userId)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Upvote_aduanId_userId_key",
+          "public",
+          "\"public\".\"Upvote\"",
+          "u",
+          "[\"aduanId\",\"userId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.User.User_email_key",
+    "label": "Add unique constraint on \"User\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "User_email_key",
+        "table": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"User_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "User_email_key",
+          "public",
+          "\"public\".\"User\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"User_email_key\" on \"User\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"User_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"User\" ADD CONSTRAINT \"User_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"User_email_key\" exists on (email)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "User_email_key",
+          "public",
+          "\"public\".\"User\"",
+          "u",
+          "[\"email\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.VerifikasiDomisili.VerifikasiDomisili_userId_key",
+    "label": "Add unique constraint on \"VerifikasiDomisili\" (userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "VerifikasiDomisili_userId_key",
+        "table": "VerifikasiDomisili"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"VerifikasiDomisili_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "VerifikasiDomisili_userId_key",
+          "public",
+          "\"public\".\"VerifikasiDomisili\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"VerifikasiDomisili_userId_key\" on \"VerifikasiDomisili\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"VerifikasiDomisili_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"VerifikasiDomisili\" ADD CONSTRAINT \"VerifikasiDomisili_userId_key\" UNIQUE (\"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"VerifikasiDomisili_userId_key\" exists on (userId)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "VerifikasiDomisili_userId_key",
+          "public",
+          "\"public\".\"VerifikasiDomisili\"",
+          "u",
+          "[\"userId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Aduan.Aduan_instansiId_idx_8bad60fa",
+    "label": "Create index \"Aduan_instansiId_idx_8bad60fa\" on \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Aduan_instansiId_idx_8bad60fa",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Aduan_instansiId_idx_8bad60fa\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan_instansiId_idx_8bad60fa\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Aduan_instansiId_idx_8bad60fa\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Aduan_instansiId_idx_8bad60fa\"",
+        "sql": "CREATE INDEX \"Aduan_instansiId_idx_8bad60fa\" ON \"public\".\"Aduan\" (\"instansiId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Aduan_instansiId_idx_8bad60fa\" exists on \"Aduan\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan_instansiId_idx_8bad60fa\"",
+          "i",
+          "I",
+          "\"public\".\"Aduan\"",
+          "btree",
+          "[\"instansiId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Aduan.Aduan_kategoriId_idx_807b1d04",
+    "label": "Create index \"Aduan_kategoriId_idx_807b1d04\" on \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Aduan_kategoriId_idx_807b1d04",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Aduan_kategoriId_idx_807b1d04\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan_kategoriId_idx_807b1d04\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Aduan_kategoriId_idx_807b1d04\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Aduan_kategoriId_idx_807b1d04\"",
+        "sql": "CREATE INDEX \"Aduan_kategoriId_idx_807b1d04\" ON \"public\".\"Aduan\" (\"kategoriId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Aduan_kategoriId_idx_807b1d04\" exists on \"Aduan\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan_kategoriId_idx_807b1d04\"",
+          "i",
+          "I",
+          "\"public\".\"Aduan\"",
+          "btree",
+          "[\"kategoriId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Aduan.Aduan_kecamatanId_idx_b56575e3",
+    "label": "Create index \"Aduan_kecamatanId_idx_b56575e3\" on \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Aduan_kecamatanId_idx_b56575e3",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Aduan_kecamatanId_idx_b56575e3\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan_kecamatanId_idx_b56575e3\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Aduan_kecamatanId_idx_b56575e3\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Aduan_kecamatanId_idx_b56575e3\"",
+        "sql": "CREATE INDEX \"Aduan_kecamatanId_idx_b56575e3\" ON \"public\".\"Aduan\" (\"kecamatanId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Aduan_kecamatanId_idx_b56575e3\" exists on \"Aduan\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan_kecamatanId_idx_b56575e3\"",
+          "i",
+          "I",
+          "\"public\".\"Aduan\"",
+          "btree",
+          "[\"kecamatanId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Aduan.Aduan_pelaporId_idx_bf2820df",
+    "label": "Create index \"Aduan_pelaporId_idx_bf2820df\" on \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Aduan_pelaporId_idx_bf2820df",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Aduan_pelaporId_idx_bf2820df\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan_pelaporId_idx_bf2820df\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Aduan_pelaporId_idx_bf2820df\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Aduan_pelaporId_idx_bf2820df\"",
+        "sql": "CREATE INDEX \"Aduan_pelaporId_idx_bf2820df\" ON \"public\".\"Aduan\" (\"pelaporId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Aduan_pelaporId_idx_bf2820df\" exists on \"Aduan\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Aduan_pelaporId_idx_bf2820df\"",
+          "i",
+          "I",
+          "\"public\".\"Aduan\"",
+          "btree",
+          "[\"pelaporId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.FotoAduan.FotoAduan_aduanId_idx_1278931e",
+    "label": "Create index \"FotoAduan_aduanId_idx_1278931e\" on \"FotoAduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "FotoAduan_aduanId_idx_1278931e",
+        "table": "FotoAduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"FotoAduan_aduanId_idx_1278931e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"FotoAduan_aduanId_idx_1278931e\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"FotoAduan_aduanId_idx_1278931e\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"FotoAduan_aduanId_idx_1278931e\"",
+        "sql": "CREATE INDEX \"FotoAduan_aduanId_idx_1278931e\" ON \"public\".\"FotoAduan\" (\"aduanId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"FotoAduan_aduanId_idx_1278931e\" exists on \"FotoAduan\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"FotoAduan_aduanId_idx_1278931e\"",
+          "i",
+          "I",
+          "\"public\".\"FotoAduan\"",
+          "btree",
+          "[\"aduanId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Notifikasi.Notifikasi_aduanId_idx_1278931e",
+    "label": "Create index \"Notifikasi_aduanId_idx_1278931e\" on \"Notifikasi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Notifikasi_aduanId_idx_1278931e",
+        "table": "Notifikasi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Notifikasi_aduanId_idx_1278931e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Notifikasi_aduanId_idx_1278931e\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Notifikasi_aduanId_idx_1278931e\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Notifikasi_aduanId_idx_1278931e\"",
+        "sql": "CREATE INDEX \"Notifikasi_aduanId_idx_1278931e\" ON \"public\".\"Notifikasi\" (\"aduanId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Notifikasi_aduanId_idx_1278931e\" exists on \"Notifikasi\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Notifikasi_aduanId_idx_1278931e\"",
+          "i",
+          "I",
+          "\"public\".\"Notifikasi\"",
+          "btree",
+          "[\"aduanId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Notifikasi.Notifikasi_userId_idx_a489d58a",
+    "label": "Create index \"Notifikasi_userId_idx_a489d58a\" on \"Notifikasi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Notifikasi_userId_idx_a489d58a",
+        "table": "Notifikasi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Notifikasi_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Notifikasi_userId_idx_a489d58a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Notifikasi_userId_idx_a489d58a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Notifikasi_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"Notifikasi_userId_idx_a489d58a\" ON \"public\".\"Notifikasi\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Notifikasi_userId_idx_a489d58a\" exists on \"Notifikasi\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Notifikasi_userId_idx_a489d58a\"",
+          "i",
+          "I",
+          "\"public\".\"Notifikasi\"",
+          "btree",
+          "[\"userId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.RiwayatStatus.RiwayatStatus_aduanId_idx_1278931e",
+    "label": "Create index \"RiwayatStatus_aduanId_idx_1278931e\" on \"RiwayatStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "RiwayatStatus_aduanId_idx_1278931e",
+        "table": "RiwayatStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"RiwayatStatus_aduanId_idx_1278931e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"RiwayatStatus_aduanId_idx_1278931e\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"RiwayatStatus_aduanId_idx_1278931e\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"RiwayatStatus_aduanId_idx_1278931e\"",
+        "sql": "CREATE INDEX \"RiwayatStatus_aduanId_idx_1278931e\" ON \"public\".\"RiwayatStatus\" (\"aduanId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"RiwayatStatus_aduanId_idx_1278931e\" exists on \"RiwayatStatus\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"RiwayatStatus_aduanId_idx_1278931e\"",
+          "i",
+          "I",
+          "\"public\".\"RiwayatStatus\"",
+          "btree",
+          "[\"aduanId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.RiwayatStatus.RiwayatStatus_olehId_idx_1ef59b2b",
+    "label": "Create index \"RiwayatStatus_olehId_idx_1ef59b2b\" on \"RiwayatStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "RiwayatStatus_olehId_idx_1ef59b2b",
+        "table": "RiwayatStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"RiwayatStatus_olehId_idx_1ef59b2b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"RiwayatStatus_olehId_idx_1ef59b2b\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"RiwayatStatus_olehId_idx_1ef59b2b\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"RiwayatStatus_olehId_idx_1ef59b2b\"",
+        "sql": "CREATE INDEX \"RiwayatStatus_olehId_idx_1ef59b2b\" ON \"public\".\"RiwayatStatus\" (\"olehId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"RiwayatStatus_olehId_idx_1ef59b2b\" exists on \"RiwayatStatus\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"RiwayatStatus_olehId_idx_1ef59b2b\"",
+          "i",
+          "I",
+          "\"public\".\"RiwayatStatus\"",
+          "btree",
+          "[\"olehId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Session.Session_userId_idx_a489d58a",
+    "label": "Create index \"Session_userId_idx_a489d58a\" on \"Session\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Session_userId_idx_a489d58a",
+        "table": "Session"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Session_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Session_userId_idx_a489d58a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Session_userId_idx_a489d58a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Session_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"Session_userId_idx_a489d58a\" ON \"public\".\"Session\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Session_userId_idx_a489d58a\" exists on \"Session\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Session_userId_idx_a489d58a\"",
+          "i",
+          "I",
+          "\"public\".\"Session\"",
+          "btree",
+          "[\"userId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Upvote.Upvote_aduanId_idx_1278931e",
+    "label": "Create index \"Upvote_aduanId_idx_1278931e\" on \"Upvote\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Upvote_aduanId_idx_1278931e",
+        "table": "Upvote"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Upvote_aduanId_idx_1278931e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Upvote_aduanId_idx_1278931e\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Upvote_aduanId_idx_1278931e\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Upvote_aduanId_idx_1278931e\"",
+        "sql": "CREATE INDEX \"Upvote_aduanId_idx_1278931e\" ON \"public\".\"Upvote\" (\"aduanId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Upvote_aduanId_idx_1278931e\" exists on \"Upvote\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Upvote_aduanId_idx_1278931e\"",
+          "i",
+          "I",
+          "\"public\".\"Upvote\"",
+          "btree",
+          "[\"aduanId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Upvote.Upvote_userId_idx_a489d58a",
+    "label": "Create index \"Upvote_userId_idx_a489d58a\" on \"Upvote\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Upvote_userId_idx_a489d58a",
+        "table": "Upvote"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Upvote_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Upvote_userId_idx_a489d58a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Upvote_userId_idx_a489d58a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Upvote_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"Upvote_userId_idx_a489d58a\" ON \"public\".\"Upvote\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Upvote_userId_idx_a489d58a\" exists on \"Upvote\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Upvote_userId_idx_a489d58a\"",
+          "i",
+          "I",
+          "\"public\".\"Upvote\"",
+          "btree",
+          "[\"userId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.User.User_kecamatanId_idx_b56575e3",
+    "label": "Create index \"User_kecamatanId_idx_b56575e3\" on \"User\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "User_kecamatanId_idx_b56575e3",
+        "table": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"User_kecamatanId_idx_b56575e3\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"User_kecamatanId_idx_b56575e3\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"User_kecamatanId_idx_b56575e3\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"User_kecamatanId_idx_b56575e3\"",
+        "sql": "CREATE INDEX \"User_kecamatanId_idx_b56575e3\" ON \"public\".\"User\" (\"kecamatanId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"User_kecamatanId_idx_b56575e3\" exists on \"User\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"User_kecamatanId_idx_b56575e3\"",
+          "i",
+          "I",
+          "\"public\".\"User\"",
+          "btree",
+          "[\"kecamatanId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Aduan.Aduan_pelaporId_fkey",
+    "label": "Add foreign key \"Aduan_pelaporId_fkey\" on \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Aduan_pelaporId_fkey",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Aduan_pelaporId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Aduan_pelaporId_fkey",
+          "public",
+          "\"public\".\"Aduan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Aduan_pelaporId_fkey\" on \"Aduan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Aduan_pelaporId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Aduan\"\nADD CONSTRAINT \"Aduan_pelaporId_fkey\"\nFOREIGN KEY (\"pelaporId\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Aduan_pelaporId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Aduan_pelaporId_fkey",
+          "public",
+          "\"public\".\"Aduan\"",
+          "f",
+          "[\"pelaporId\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Aduan.Aduan_kategoriId_fkey",
+    "label": "Add foreign key \"Aduan_kategoriId_fkey\" on \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Aduan_kategoriId_fkey",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Aduan_kategoriId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Aduan_kategoriId_fkey",
+          "public",
+          "\"public\".\"Aduan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Aduan_kategoriId_fkey\" on \"Aduan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Aduan_kategoriId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Aduan\"\nADD CONSTRAINT \"Aduan_kategoriId_fkey\"\nFOREIGN KEY (\"kategoriId\")\nREFERENCES \"public\".\"Kategori\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Aduan_kategoriId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Aduan_kategoriId_fkey",
+          "public",
+          "\"public\".\"Aduan\"",
+          "f",
+          "[\"kategoriId\"]",
+          "\"public\".\"Kategori\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Aduan.Aduan_kecamatanId_fkey",
+    "label": "Add foreign key \"Aduan_kecamatanId_fkey\" on \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Aduan_kecamatanId_fkey",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Aduan_kecamatanId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Aduan_kecamatanId_fkey",
+          "public",
+          "\"public\".\"Aduan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Aduan_kecamatanId_fkey\" on \"Aduan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Aduan_kecamatanId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Aduan\"\nADD CONSTRAINT \"Aduan_kecamatanId_fkey\"\nFOREIGN KEY (\"kecamatanId\")\nREFERENCES \"public\".\"Kecamatan\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Aduan_kecamatanId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Aduan_kecamatanId_fkey",
+          "public",
+          "\"public\".\"Aduan\"",
+          "f",
+          "[\"kecamatanId\"]",
+          "\"public\".\"Kecamatan\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Aduan.Aduan_instansiId_fkey",
+    "label": "Add foreign key \"Aduan_instansiId_fkey\" on \"Aduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Aduan_instansiId_fkey",
+        "table": "Aduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Aduan_instansiId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Aduan_instansiId_fkey",
+          "public",
+          "\"public\".\"Aduan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Aduan_instansiId_fkey\" on \"Aduan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Aduan_instansiId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Aduan\"\nADD CONSTRAINT \"Aduan_instansiId_fkey\"\nFOREIGN KEY (\"instansiId\")\nREFERENCES \"public\".\"Instansi\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Aduan_instansiId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Aduan_instansiId_fkey",
+          "public",
+          "\"public\".\"Aduan\"",
+          "f",
+          "[\"instansiId\"]",
+          "\"public\".\"Instansi\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.FotoAduan.FotoAduan_aduanId_fkey",
+    "label": "Add foreign key \"FotoAduan_aduanId_fkey\" on \"FotoAduan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "FotoAduan_aduanId_fkey",
+        "table": "FotoAduan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"FotoAduan_aduanId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "FotoAduan_aduanId_fkey",
+          "public",
+          "\"public\".\"FotoAduan\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"FotoAduan_aduanId_fkey\" on \"FotoAduan\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"FotoAduan_aduanId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"FotoAduan\"\nADD CONSTRAINT \"FotoAduan_aduanId_fkey\"\nFOREIGN KEY (\"aduanId\")\nREFERENCES \"public\".\"Aduan\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"FotoAduan_aduanId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "FotoAduan_aduanId_fkey",
+          "public",
+          "\"public\".\"FotoAduan\"",
+          "f",
+          "[\"aduanId\"]",
+          "\"public\".\"Aduan\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Notifikasi.Notifikasi_userId_fkey",
+    "label": "Add foreign key \"Notifikasi_userId_fkey\" on \"Notifikasi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Notifikasi_userId_fkey",
+        "table": "Notifikasi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Notifikasi_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Notifikasi_userId_fkey",
+          "public",
+          "\"public\".\"Notifikasi\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Notifikasi_userId_fkey\" on \"Notifikasi\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Notifikasi_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Notifikasi\"\nADD CONSTRAINT \"Notifikasi_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Notifikasi_userId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Notifikasi_userId_fkey",
+          "public",
+          "\"public\".\"Notifikasi\"",
+          "f",
+          "[\"userId\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Notifikasi.Notifikasi_aduanId_fkey",
+    "label": "Add foreign key \"Notifikasi_aduanId_fkey\" on \"Notifikasi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Notifikasi_aduanId_fkey",
+        "table": "Notifikasi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Notifikasi_aduanId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Notifikasi_aduanId_fkey",
+          "public",
+          "\"public\".\"Notifikasi\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Notifikasi_aduanId_fkey\" on \"Notifikasi\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Notifikasi_aduanId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Notifikasi\"\nADD CONSTRAINT \"Notifikasi_aduanId_fkey\"\nFOREIGN KEY (\"aduanId\")\nREFERENCES \"public\".\"Aduan\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Notifikasi_aduanId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Notifikasi_aduanId_fkey",
+          "public",
+          "\"public\".\"Notifikasi\"",
+          "f",
+          "[\"aduanId\"]",
+          "\"public\".\"Aduan\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.RiwayatStatus.RiwayatStatus_aduanId_fkey",
+    "label": "Add foreign key \"RiwayatStatus_aduanId_fkey\" on \"RiwayatStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "RiwayatStatus_aduanId_fkey",
+        "table": "RiwayatStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"RiwayatStatus_aduanId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "RiwayatStatus_aduanId_fkey",
+          "public",
+          "\"public\".\"RiwayatStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"RiwayatStatus_aduanId_fkey\" on \"RiwayatStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"RiwayatStatus_aduanId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"RiwayatStatus\"\nADD CONSTRAINT \"RiwayatStatus_aduanId_fkey\"\nFOREIGN KEY (\"aduanId\")\nREFERENCES \"public\".\"Aduan\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"RiwayatStatus_aduanId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "RiwayatStatus_aduanId_fkey",
+          "public",
+          "\"public\".\"RiwayatStatus\"",
+          "f",
+          "[\"aduanId\"]",
+          "\"public\".\"Aduan\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.RiwayatStatus.RiwayatStatus_olehId_fkey",
+    "label": "Add foreign key \"RiwayatStatus_olehId_fkey\" on \"RiwayatStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "RiwayatStatus_olehId_fkey",
+        "table": "RiwayatStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"RiwayatStatus_olehId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "RiwayatStatus_olehId_fkey",
+          "public",
+          "\"public\".\"RiwayatStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"RiwayatStatus_olehId_fkey\" on \"RiwayatStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"RiwayatStatus_olehId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"RiwayatStatus\"\nADD CONSTRAINT \"RiwayatStatus_olehId_fkey\"\nFOREIGN KEY (\"olehId\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"RiwayatStatus_olehId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "RiwayatStatus_olehId_fkey",
+          "public",
+          "\"public\".\"RiwayatStatus\"",
+          "f",
+          "[\"olehId\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Session.Session_userId_fkey",
+    "label": "Add foreign key \"Session_userId_fkey\" on \"Session\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Session_userId_fkey",
+        "table": "Session"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Session_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Session_userId_fkey",
+          "public",
+          "\"public\".\"Session\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Session_userId_fkey\" on \"Session\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Session_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Session\"\nADD CONSTRAINT \"Session_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Session_userId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Session_userId_fkey",
+          "public",
+          "\"public\".\"Session\"",
+          "f",
+          "[\"userId\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Upvote.Upvote_aduanId_fkey",
+    "label": "Add foreign key \"Upvote_aduanId_fkey\" on \"Upvote\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Upvote_aduanId_fkey",
+        "table": "Upvote"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Upvote_aduanId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Upvote_aduanId_fkey",
+          "public",
+          "\"public\".\"Upvote\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Upvote_aduanId_fkey\" on \"Upvote\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Upvote_aduanId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Upvote\"\nADD CONSTRAINT \"Upvote_aduanId_fkey\"\nFOREIGN KEY (\"aduanId\")\nREFERENCES \"public\".\"Aduan\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Upvote_aduanId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Upvote_aduanId_fkey",
+          "public",
+          "\"public\".\"Upvote\"",
+          "f",
+          "[\"aduanId\"]",
+          "\"public\".\"Aduan\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Upvote.Upvote_userId_fkey",
+    "label": "Add foreign key \"Upvote_userId_fkey\" on \"Upvote\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Upvote_userId_fkey",
+        "table": "Upvote"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Upvote_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Upvote_userId_fkey",
+          "public",
+          "\"public\".\"Upvote\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Upvote_userId_fkey\" on \"Upvote\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Upvote_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Upvote\"\nADD CONSTRAINT \"Upvote_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Upvote_userId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Upvote_userId_fkey",
+          "public",
+          "\"public\".\"Upvote\"",
+          "f",
+          "[\"userId\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.User.User_kecamatanId_fkey",
+    "label": "Add foreign key \"User_kecamatanId_fkey\" on \"User\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "User_kecamatanId_fkey",
+        "table": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"User_kecamatanId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "User_kecamatanId_fkey",
+          "public",
+          "\"public\".\"User\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"User_kecamatanId_fkey\" on \"User\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"User_kecamatanId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"User\"\nADD CONSTRAINT \"User_kecamatanId_fkey\"\nFOREIGN KEY (\"kecamatanId\")\nREFERENCES \"public\".\"Kecamatan\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"User_kecamatanId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "User_kecamatanId_fkey",
+          "public",
+          "\"public\".\"User\"",
+          "f",
+          "[\"kecamatanId\"]",
+          "\"public\".\"Kecamatan\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.VerifikasiDomisili.VerifikasiDomisili_userId_fkey",
+    "label": "Add foreign key \"VerifikasiDomisili_userId_fkey\" on \"VerifikasiDomisili\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "VerifikasiDomisili_userId_fkey",
+        "table": "VerifikasiDomisili"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"VerifikasiDomisili_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "VerifikasiDomisili_userId_fkey",
+          "public",
+          "\"public\".\"VerifikasiDomisili\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"VerifikasiDomisili_userId_fkey\" on \"VerifikasiDomisili\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"VerifikasiDomisili_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"VerifikasiDomisili\"\nADD CONSTRAINT \"VerifikasiDomisili_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"VerifikasiDomisili_userId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "VerifikasiDomisili_userId_fkey",
+          "public",
+          "\"public\".\"VerifikasiDomisili\"",
+          "f",
+          "[\"userId\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  }
+]

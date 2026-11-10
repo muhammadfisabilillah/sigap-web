@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'23bd5c0867124915f2b1b65cbecabebc7f4e26898bf2e96e6527fa33f8a930be'>;
+  StorageHashBase<'d428f552660c3e2a9b47165bbae86923a66095b82e7227ed0436837449f3f270'>;
 export type ExecutionHash =
   ExecutionHashBase<'be478b39274f745290eb1596a8c3b900ecabc20d7e972d698387375fe5cdc94f'>;
 export type ProfileHash =
@@ -525,6 +525,7 @@ export namespace Models {
     id: FieldOutputTypes['public']['User']['id'];
     kecamatanId: FieldOutputTypes['public']['User']['kecamatanId'];
     nama: FieldOutputTypes['public']['User']['nama'];
+    nik: FieldOutputTypes['public']['User']['nik'];
     noHp: FieldOutputTypes['public']['User']['noHp'];
     passwordHash: FieldOutputTypes['public']['User']['passwordHash'];
     role: FieldOutputTypes['public']['User']['role'];
@@ -1279,6 +1280,12 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly nik: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                   readonly many: false;
                 };
                 readonly noHp: {
@@ -2123,6 +2130,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly nik: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly noHp: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -2236,6 +2247,7 @@ type ContractBase = Omit<
                 readonly id: { readonly column: 'id' };
                 readonly kecamatanId: { readonly column: 'kecamatanId' };
                 readonly nama: { readonly column: 'nama' };
+                readonly nik: { readonly column: 'nik' };
                 readonly noHp: { readonly column: 'noHp' };
                 readonly passwordHash: { readonly column: 'passwordHash' };
                 readonly role: { readonly column: 'role' };

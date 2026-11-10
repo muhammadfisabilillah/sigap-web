@@ -1139,6 +1139,13 @@
                   "kind": "scalar"
                 }
               },
+              "nik": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "noHp": {
                 "nullable": true,
                 "type": {
@@ -1311,6 +1318,9 @@
                 },
                 "nama": {
                   "column": "nama"
+                },
+                "nik": {
+                  "column": "nik"
                 },
                 "noHp": {
                   "column": "noHp"
@@ -2344,6 +2354,11 @@
                   "dataType": "pg/text",
                   "nullable": false
                 },
+                "nik": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
                 "noHp": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
@@ -2588,7 +2603,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "23bd5c0867124915f2b1b65cbecabebc7f4e26898bf2e96e6527fa33f8a930be"
+    "storageHash": "d428f552660c3e2a9b47165bbae86923a66095b82e7227ed0436837449f3f270"
   },
   "execution": {
     "executionHash": "be478b39274f745290eb1596a8c3b900ecabc20d7e972d698387375fe5cdc94f",

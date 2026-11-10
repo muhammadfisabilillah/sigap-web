@@ -14,9 +14,9 @@ export async function PATCH(request: Request) {
     );
   }
 
-  let body: { kecamatanId?: number | null; noHp?: string };
+  let body: { kecamatanId?: number | null; noHp?: string; nik?: string };
   try {
-    body = (await request.json()) as { kecamatanId?: number | null; noHp?: string };
+    body = (await request.json()) as { kecamatanId?: number | null; noHp?: string; nik?: string };
   } catch {
     return NextResponse.json({ ok: false, error: 'Body JSON tidak valid' }, { status: 400 });
   }
@@ -42,6 +42,17 @@ export async function PATCH(request: Request) {
       await db.orm.public.User.where({ id: user.id }).update({
         noHp: body.noHp.trim() || null,
       });
+    }
+
+    if (body.nik !== undefined) {
+      const nik = body.nik.trim();
+      if (nik !== '' && !/^\d{16}$/.test(nik)) {
+        return NextResponse.json(
+          { ok: false, error: 'NIK harus tepat 16 digit angka.' },
+          { status: 422 },
+        );
+      }
+      await db.orm.public.User.where({ id: user.id }).update({ nik: nik || null });
     }
 
     return NextResponse.json({ ok: true, message: 'Profil diperbarui.' });

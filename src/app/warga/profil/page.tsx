@@ -38,12 +38,6 @@ export default function ProfilPage() {
   );
 }
 
-function initialsOf(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return '?';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-}
 
 async function Profil() {
   await connection();
@@ -84,15 +78,8 @@ async function Profil() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#08192b]/90 via-[#08192b]/30 to-transparent" />
           </div>
 
-          <div className="-mt-8 flex flex-col items-start p-5 sm:p-6">
-            <div
-              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-4 border-card bg-brand text-2xl font-bold text-white shadow-md"
-              aria-hidden="true"
-            >
-              {initialsOf(user.nama)}
-            </div>
-
-            <h2 className="mt-4 text-xl font-bold leading-tight text-ink">{user.nama}</h2>
+          <div className="-mt-8 p-5 sm:p-6">
+            <h2 className="mt-0 text-xl font-bold leading-tight text-ink">{user.nama}</h2>
             <p className="mt-0.5 text-sm text-muted">{user.email}</p>
 
             <div className="mt-4 flex flex-wrap gap-2">
@@ -108,6 +95,12 @@ async function Profil() {
             </div>
 
             <dl className="mt-5 w-full space-y-3 border-t border-line pt-5 text-sm">
+              <div className="flex items-baseline justify-between gap-4">
+                <dt className="text-muted">NIK</dt>
+                <dd className="font-mono font-medium text-ink">
+                  {freshUser?.nik?.trim() || 'Belum diisi'}
+                </dd>
+              </div>
               <div className="flex items-baseline justify-between gap-4">
                 <dt className="text-muted">Kecamatan</dt>
                 <dd className="font-medium text-ink">
@@ -135,6 +128,7 @@ async function Profil() {
               kecamatan={kecamatan}
               initialKecamatanId={freshUser?.kecamatanId ?? user.kecamatanId ?? null}
               initialNoHp={freshUser?.noHp ?? ''}
+              initialNik={freshUser?.nik ?? ''}
             />
           </div>
         </section>

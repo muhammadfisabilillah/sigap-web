@@ -9,16 +9,19 @@ export function ProfilForm({
   kecamatan,
   initialKecamatanId,
   initialNoHp,
+  initialNik,
 }: {
   kecamatan: Option[];
   initialKecamatanId: number | null;
   initialNoHp: string;
+  initialNik: string;
 }) {
   const router = useRouter();
   const [kecamatanId, setKecamatanId] = useState(
     initialKecamatanId ? String(initialKecamatanId) : '',
   );
   const [noHp, setNoHp] = useState(initialNoHp);
+  const [nik, setNik] = useState(initialNik);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -37,6 +40,7 @@ export function ProfilForm({
         body: JSON.stringify({
           kecamatanId: kecamatanId ? Number(kecamatanId) : null,
           noHp: noHp.trim(),
+          nik: nik.trim(),
         }),
       });
       const data = (await response.json().catch(() => null)) as
@@ -93,6 +97,26 @@ export function ProfilForm({
           <p className="mt-1 text-xs text-muted">
             Kecamatan tercatat untuk keperluan verifikasi domisili Anda. Pastikan sesuai KTP —
             petugas akan memvalidasinya.
+          </p>
+        </div>
+
+        <div>
+          <label htmlFor="nik" className="mb-1.5 block text-sm font-medium text-ink">
+            NIK (16 digit)
+          </label>
+          <input
+            id="nik"
+            type="text"
+            inputMode="numeric"
+            maxLength={16}
+            value={nik}
+            onChange={(event) => setNik(event.target.value.replace(/\D/g, '').slice(0, 16))}
+            placeholder="Contoh: 3578012345670001"
+            disabled={isLoading}
+            className={inputClass}
+          />
+          <p className="mt-1 text-xs text-muted">
+            Nomor Induk Kependudukan sesuai KTP. Nanti akan otomatis terbaca saat Anda upload KTP.
           </p>
         </div>
 
