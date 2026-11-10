@@ -4,6 +4,7 @@ import { connection } from 'next/server';
 import { DashboardShell } from '@/src/components/dashboard/dashboard-shell';
 import { ModuleCard, StatCard } from '@/src/components/dashboard/dashboard-cards';
 import { PageSkeleton } from '@/src/components/dashboard/page-skeleton';
+import { ActivationTimeline } from '@/src/components/dashboard/activation-timeline';
 import { requireRole } from '@/src/lib/auth/guard';
 import { db } from '@/src/prisma/db';
 
@@ -47,11 +48,18 @@ async function WargaDashboard() {
     ? (STATUS_DOMISILI_LABEL[pengajuan.status] ?? pengajuan.status)
     : 'Belum diajukan';
 
+  const isVerified = user.statusAkun === 'Terverifikasi';
+
   return (
     <DashboardShell
       user={user}
       title={`Selamat datang, ${user.nama.split(' ')[0]}`}
       subtitle="Pantau status akun, verifikasi domisili, dan aduan Anda dari satu tempat."
+      cta={
+        isVerified
+          ? { label: 'Buat Aduan Sekarang', href: '/warga/aduan/baru' }
+          : { label: 'Verifikasi Domisili', href: '/domisili' }
+      }
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
@@ -119,39 +127,18 @@ async function WargaDashboard() {
         />
       </div>
 
-      <div className="mt-8 border border-line bg-card p-5">
-        <h2 className="text-sm font-semibold">Langkah mengaktifkan akun</h2>
-        <ol className="mt-3 space-y-2.5 text-sm text-muted">
-          <Step n={1} done label="Daftar akun SIGAP" />
-          <Step n={2} done={Boolean(pengajuan)} label="Ajukan verifikasi domisili (unggah KTP)" />
-          <Step
-            n={3}
-            done={pengajuan?.status === 'Diterima'}
-            label="Petugas kecamatan memverifikasi domisili"
-          />
-          <Step
-            n={4}
-            done={user.statusAkun === 'Terverifikasi'}
-            label="Akun aktif — Anda dapat membuat aduan"
-          />
-        </ol>
+      <div className="mt-8">
+        <ActivationTimeline
+          steps={[
+            { label: 'Daftar akun SIGAP', done: true },
+            { label: 'Ajukan verifikasi domisili', done: Boolean(pengajuan) },
+            { label: 'Petugas memverifikasi domisili', done: pengajuan?.status === 'Diterima' },
+            { label: 'Akun aktif — bisa buat aduan', done: isVerified },
+          ]}
+        />
       </div>
     </DashboardShell>
   );
 }
 
-function Step({ n, done, label }: { n: number; done: boolean; label: string }) {
-  return (
-    <li className="flex items-start gap-3">
-      <span
-        className={`flex h-5 w-5 shrink-0 items-center justify-center text-[11px] font-semibold ${
-          done ? 'bg-brand text-white' : 'border border-line text-muted'
-        }`}
-        aria-hidden="true"
-      >
-        {done ? '✓' : n}
-      </span>
-      <span className={done ? 'text-ink' : ''}>{label}</span>
-    </li>
-  );
-}
+

@@ -43,9 +43,10 @@ type DashboardShellProps = {
   title: string;
   subtitle: string;
   children: ReactNode;
+  cta?: { label: string; href: string };
 };
 
-export function DashboardShell({ user, title, subtitle, children }: DashboardShellProps) {
+export function DashboardShell({ user, title, subtitle, children, cta }: DashboardShellProps) {
   const nav = NAV_BY_ROLE[user.role] ?? [];
 
   return (
@@ -91,14 +92,38 @@ export function DashboardShell({ user, title, subtitle, children }: DashboardShe
             className="object-cover object-[50%_42%]"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#08192b]/95 via-[#0d2138]/80 to-[#0d2138]/20" />
-          <div className="relative z-10 flex h-44 flex-col justify-center p-6 sm:h-52 sm:p-8">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300">
-              {ROLE_LABEL[user.role] ?? user.role} · SIGAP Surabaya
-            </p>
-            <h1 className="mt-2 text-2xl font-bold leading-tight text-white sm:text-3xl">
-              {title}
-            </h1>
-            <p className="mt-2 max-w-md text-sm leading-relaxed text-white/85">{subtitle}</p>
+          <div className="relative z-10 flex h-44 flex-col justify-center p-6 sm:h-52 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:p-8">
+            <div className="max-w-md">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300">
+                {ROLE_LABEL[user.role] ?? user.role} · SIGAP Surabaya
+              </p>
+              <h1 className="mt-2 text-2xl font-bold leading-tight text-white sm:text-3xl">
+                {title}
+              </h1>
+              <p className="mt-2 text-sm leading-relaxed text-white/85">{subtitle}</p>
+            </div>
+            {cta ? (
+              <Link
+                href={cta.href}
+                className="mt-4 inline-flex w-fit shrink-0 items-center gap-2 rounded-md bg-amber-400 px-5 py-3 text-sm font-semibold text-[#231400] shadow-lg transition-all hover:-translate-y-0.5 hover:bg-amber-300 sm:mt-0 sm:px-6 sm:text-base"
+              >
+                {cta.label}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </Link>
+            ) : null}
           </div>
         </section>
 
