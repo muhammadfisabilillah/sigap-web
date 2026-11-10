@@ -38,10 +38,15 @@ export function AduanDetailBody({
                 {STATUS_ADUAN_LABEL[item.status] ?? item.status}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-xs font-medium text-muted">Dukungan warga</p>
-              <p className="mt-0.5 text-lg font-semibold text-ink">{item.totalUpvote}</p>
-              {upvote ? <div className="mt-2 flex justify-end">{upvote}</div> : null}
+            <div>
+              {upvote ? (
+                <div className="flex flex-col items-end">{upvote}</div>
+              ) : (
+                <div className="text-right">
+                  <p className="text-xs font-medium text-muted">Dukungan warga</p>
+                  <p className="mt-0.5 text-lg font-semibold text-ink">{item.totalUpvote}</p>
+                </div>
+              )}
             </div>
           </div>
 

@@ -82,17 +82,20 @@ export function UpvoteButton({
   }
 
   return (
-    <span className="inline-flex flex-col items-start gap-1">
+    <span className="inline-flex flex-col items-end gap-1">
+      <span className="text-[10px] font-medium uppercase tracking-wider text-muted">
+        Dukungan warga
+      </span>
       <button
         type="button"
         onClick={handleToggle}
         disabled={isLoading}
         aria-pressed={sudahUpvote}
-        className={`cursor-pointer rounded-md border px-3 py-1.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
+        className={`cursor-pointer rounded-lg border-2 px-4 py-2 text-sm font-bold transition-all ${
           sudahUpvote
             ? 'border-brand bg-brand text-white'
-            : 'border-line bg-card text-muted hover:border-brand/40 hover:text-ink'
-        }`}
+            : 'border-brand/30 bg-brand-soft text-brand hover:border-brand'
+        } disabled:cursor-not-allowed disabled:opacity-60`}
       >
         {isLoading ? 'Memproses...' : sudahUpvote ? 'Didukung' : 'Dukung'} · {total}
       </button>
