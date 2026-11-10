@@ -1,7 +1,21 @@
 # SIGAP — Todo List
 
-Terakhir diperbarui: 9 November 2026
+Terakhir diperbarui: 10 November 2026
 Branch aktif: `feature/SCRUM-68-auth-ui`
+
+---
+
+## Agenda hari ini (10 Nov)
+
+Fokus: **finalisasi untuk presentasi**. Utamakan urutan ini:
+
+1. **Deploy ke Vercel** (Prioritas 7) — supaya bisa uji PWA di HP & catat URL
+2. **Merge PR #7** ke `development` setelah dicek tim
+3. **Rapikan data**: hapus aduan test ("fafa…", "test tiga foto"), ganti password demo
+4. **Kompres foto** `pexels-pamanjoe-21896936.jpg` (±5 MB)
+5. **Screenshot semua halaman** untuk PPT
+6. **Uji end-to-end di HP** + latihan demo 10 menit
+7. (Opsional, kalau ada waktu) **Prioritas 4b**: otomatisasi status berurutan + lonceng notifikasi di header
 
 ---
 
@@ -15,6 +29,17 @@ Branch aktif: `feature/SCRUM-68-auth-ui`
 - [x] Redirect per peran: `/` → `/warga`, `/admin`, `/petugas`, atau `/login`
 - [x] Dashboard awal Warga, Admin, Petugas + halaman `/domisili`
 - [x] Redesign anti AI-slop: font Plus Jakarta Sans, palet kertas hangat + hijau tua, icon dihapus, kartu tanpa shadow
+- [x] Modul Aduan Warga: API, form + GPS + foto, nomor tiket, Aduan Saya, Detail Aduan, Laporan Publik
+- [x] Peta Leaflet + OpenStreetMap (perbaikan URL tile)
+- [x] Upvote aduan (lintas kecamatan, kecuali aduan sendiri) + halaman Profil
+- [x] PWA: manifest, service worker, ikon, tombol pasang aplikasi
+- [x] Admin: verifikasi domisili (terima/tolak), kelola aduan (status, instansi, riwayat)
+- [x] Petugas: 31 akun per kecamatan, aduan wilayah, verifikasi domisili wilayah, tindak lanjut
+- [x] KTP bucket privat + signed URL 1 jam
+- [x] Halaman lupa kata sandi
+- [x] Halaman status domisili data nyata (bukan mock)
+- [x] Seed akun demo: admin, 31 petugas per kecamatan
+- [x] Visual dosen: banner foto di semua dashboard, stat card berwarna, kartu modul aksen, pola titik, footer lengkap, banner CTA, grafik statistik (admin & petugas), timeline aktivasi akun warga
 - [x] `npm run lint` dan `npm run build` lolos
 
 ---
@@ -28,7 +53,7 @@ Branch aktif: `feature/SCRUM-68-auth-ui`
 - [x] Integrasi Geolocation API untuk isi koordinat otomatis
 - [x] Halaman daftar "Aduan Saya" + detail aduan + riwayat status
 - [x] Halaman "Laporan Publik" untuk warga sekecamatan
-- [ ] API list aduan: `GET /api/aduan?scope=mine|public` (sudah ada, tinggal dipakai/ditest)
+- [x] API list aduan: `GET /api/aduan?scope=mine|public` (sudah dipakai & dites)
 
 ## Prioritas 2 — Verifikasi & Pengelolaan Admin
 
