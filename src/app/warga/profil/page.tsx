@@ -78,9 +78,9 @@ async function Profil() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#08192b]/90 via-[#08192b]/30 to-transparent" />
           </div>
 
-          <div className="-mt-8 p-5 sm:p-6">
-            <h2 className="mt-0 text-xl font-bold leading-tight text-ink">{user.nama}</h2>
-            <p className="mt-0.5 text-sm text-muted">{user.email}</p>
+          <div className="p-5 sm:p-6">
+            <h2 className="text-xl font-bold leading-tight text-ink">{user.nama}</h2>
+            <p className="mt-1 text-sm text-muted">{user.email}</p>
 
             <div className="mt-4 flex flex-wrap gap-2">
               <span className="inline-flex items-center rounded-full border border-line bg-paper px-3 py-1 text-[11px] font-medium text-muted">
