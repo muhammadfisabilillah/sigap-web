@@ -1,21 +1,21 @@
 # SIGAP — Todo List
 
-Terakhir diperbarui: 10 November 2026
+Terakhir diperbarui: 12 November 2026
 Branch aktif: `feature/SCRUM-68-auth-ui`
 
 ---
 
-## Agenda hari ini (10 Nov)
+## Agenda hari ini (12 Nov)
 
-Fokus: **finalisasi untuk presentasi**. Utamakan urutan ini:
+Fokus: **siap presentasi**. Urutan pengerjaan:
 
-1. **Deploy ke Vercel** (Prioritas 7) — supaya bisa uji PWA di HP & catat URL
-2. **Merge PR #7** ke `development` setelah dicek tim
-3. **Rapikan data**: hapus aduan test ("fafa…", "test tiga foto"), ganti password demo
+1. **Deploy ke Vercel** (Prioritas 7) — dapat URL production, set env: DATABASE_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+2. **Merge PR #7** ke `development` setelah direview tim
+3. **Rapikan data**: hapus aduan test ("fafafa…", "test tiga foto", "test ada PSP"), akun e2e, ganti password demo
 4. **Kompres foto** `pexels-pamanjoe-21896936.jpg` (±5 MB)
-5. **Screenshot semua halaman** untuk PPT
+5. **Screenshot semua halaman** untuk PPT (login, register, dashboard 3 role, form aduan, detail aduan, laporan publik, profil, panduan)
 6. **Uji end-to-end di HP** + latihan demo 10 menit
-7. (Opsional, kalau ada waktu) **Prioritas 4b**: otomatisasi status berurutan + lonceng notifikasi di header
+7. *(Opsional kalau ada waktu)* Prioritas 4b: otomatisasi status berurutan + lonceng notifikasi di header
 
 ---
 
@@ -39,8 +39,12 @@ Fokus: **finalisasi untuk presentasi**. Utamakan urutan ini:
 - [x] Halaman lupa kata sandi
 - [x] Halaman status domisili data nyata (bukan mock)
 - [x] Seed akun demo: admin, 31 petugas per kecamatan
-- [x] Visual dosen: banner foto di semua dashboard, stat card berwarna, kartu modul aksen, pola titik, footer lengkap, banner CTA, grafik statistik (admin & petugas), timeline aktivasi akun warga
-- [x] `npm run lint` dan `npm run build` lolos
+- [x] Visual dosen: banner foto di semua dashboard, stat card berwarna, kartu modul aksen, pola latar titik, footer lengkap, banner CTA, grafik statistik (admin & petugas), timeline aktivasi akun warga
+- [x] Banner CTA besar di semua dashboard ("Buat Aduan Sekarang" / "Verifikasi Domisili" / "Aduan Wilayah")
+- [x] Panduan penggunaan SIGAP + popup onboarding untuk warga baru + halaman /panduan publik
+- [x] Profil warga didesain ulang (foto banner, badge status, kartu identitas) + NIK manual & tersimpan di database (migrasi)
+- [x] Upvote: lintas kecamatan, angka otomatis update tanpa refresh, label "DUKUNGAN WARGA" di detail aduan
+- [x] `lint` + `build` lolos (35 route)
 
 ---
 
