@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 @theme inline {
   --color-paper: #f7f5f0;
@@ -21,4 +22,24 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ==========================================================================
+   Leaflet Map Fixes for Tailwind CSS
+   Mencegah peta Leaflet abu-abu / ubin (tile) tidak muncul karena reset CSS
+   ========================================================================== */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  font-family: inherit;
+}
+
+.leaflet-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.leaflet-tile {
+  max-width: none !important;
+  max-height: none !important;
 }
