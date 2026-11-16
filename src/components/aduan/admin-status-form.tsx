@@ -2,36 +2,44 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { getAksiAdmin, type StatusAduan } from '@/src/lib/aduan/transitions';
 
 type InstansiOption = { id: number; nama: string };
 
-const STATUS_OPTIONS = [
-  { value: 'Diproses', label: 'Diproses — aduan layak, sedang dikerjakan' },
-  { value: 'DiteruskanKecamatan', label: 'Diteruskan ke kecamatan' },
-  { value: 'MenungguTinjauan', label: 'Menunggu tinjauan' },
-  { value: 'Selesai', label: 'Selesai' },
-  { value: 'Ditolak', label: 'Ditolak' },
-];
-
 export function AdminStatusForm({
   aduanId,
+  currentStatus,
   instansi,
 }: {
   aduanId: number;
+  currentStatus: string;
   instansi: InstansiOption[];
 }) {
   const router = useRouter();
-  const [status, setStatus] = useState('Diproses');
+  const aksi = getAksiAdmin(currentStatus);
+  const [status, setStatus] = useState<StatusAduan | ''>(aksi[0]?.value ?? '');
   const [catatan, setCatatan] = useState('');
   const [instansiId, setInstansiId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const aksiAktif = aksi.find((item) => item.value === status);
+
+  if (aksi.length === 0 || !status) {
+    return (
+      <p className="text-sm text-muted">
+        {currentStatus === 'DiteruskanKecamatan'
+          ? 'Aduan sedang ditangani petugas kecamatan. Anda dapat menetapkan status selesai setelah petugas mengirim hasil tinjauan.'
+          : 'Tidak ada tindakan Admin yang tersedia untuk status aduan saat ini.'}
+      </p>
+    );
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (isLoading) return;
-    if (status === 'Ditolak' && catatan.trim().length < 5) {
+    if (isLoading || !status) return;
+    if (aksiAktif?.butuhCatatan && catatan.trim().length < 5) {
       setError('Catatan penolakan wajib diisi (minimal 5 karakter).');
       return;
     }
@@ -84,53 +92,69 @@ export function AdminStatusForm({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="status" className="mb-1.5 block text-sm font-medium text-ink">
-            Status baru
+            Tindakan selanjutnya
           </label>
           <select
             id="status"
             value={status}
-            onChange={(event) => setStatus(event.target.value)}
+            onChange={(event) => setStatus(event.target.value as StatusAduan)}
             disabled={isLoading}
             className={inputClass}
           >
-            {STATUS_OPTIONS.map((option) => (
+            {aksi.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
+          <p className="mt-1 text-xs text-muted">
+            Status berubah berurutan. Hanya tindakan berikutnya yang tersedia.
+          </p>
         </div>
 
-        <div>
-          <label htmlFor="instansiId" className="mb-1.5 block text-sm font-medium text-ink">
-            Teruskan ke instansi <span className="font-normal text-muted">(opsional)</span>
-          </label>
-          <select
-            id="instansiId"
-            value={instansiId}
-            onChange={(event) => setInstansiId(event.target.value)}
-            disabled={isLoading || instansi.length === 0}
-            className={inputClass}
-          >
-            <option value="">{instansi.length === 0 ? 'Belum tersedia' : 'Tidak diteruskan ke instansi'}</option>
-            {instansi.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.nama}
+        {aksiAktif?.butuhInstansi ? (
+          <div>
+            <label htmlFor="instansiId" className="mb-1.5 block text-sm font-medium text-ink">
+              Teruskan ke instansi <span className="font-normal text-muted">(opsional)</span>
+            </label>
+            <select
+              id="instansiId"
+              value={instansiId}
+              onChange={(event) => setInstansiId(event.target.value)}
+              disabled={isLoading || instansi.length === 0}
+              className={inputClass}
+            >
+              <option value="">
+                {instansi.length === 0 ? 'Belum tersedia' : 'Tidak diteruskan ke instansi'}
               </option>
-            ))}
-          </select>
-        </div>
+              {instansi.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.nama}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
 
         <div>
           <label htmlFor="catatan" className="mb-1.5 block text-sm font-medium text-ink">
             Catatan untuk warga
+            {aksiAktif?.butuhCatatan ? (
+              <span className="font-normal text-red-700"> (wajib)</span>
+            ) : (
+              <span className="font-normal text-muted"> (opsional)</span>
+            )}
           </label>
           <textarea
             id="catatan"
             rows={3}
             value={catatan}
             onChange={(event) => setCatatan(event.target.value)}
-            placeholder="Contoh: Aduan Anda telah diteruskan ke kecamatan untuk ditindaklanjuti."
+            placeholder={
+              aksiAktif?.butuhCatatan
+                ? 'Jelaskan alasan penolakan dengan jelas.'
+                : 'Contoh: Aduan Anda telah diteruskan ke kecamatan untuk ditindaklanjuti.'
+            }
             disabled={isLoading}
             className={inputClass}
           />

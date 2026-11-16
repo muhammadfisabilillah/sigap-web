@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { ReactNode } from 'react';
 import { SigapLogo } from '@/src/components/brand/sigap-logo';
 import { LogoutButton } from '@/src/components/dashboard/logout-button';
 import { InstallPrompt } from '@/src/components/pwa/install-prompt';
+import { NotificationBell } from '@/src/components/notifikasi/notification-bell';
 import type { SessionUser } from '@/src/lib/auth/session';
 
 type NavItem = {
@@ -16,6 +18,9 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
     { label: 'Domisili', href: '/domisili' },
     { label: 'Aduan Saya', href: '/warga/aduan' },
     { label: 'Laporan Publik', href: '/warga/laporan-publik' },
+    { label: 'Notifikasi', href: '/notifikasi' },
+    { label: 'Panduan', href: '/panduan' },
+    { label: 'Profil', href: '/warga/profil' },
   ],
   Admin: [
     { label: 'Dasbor', href: '/admin' },
@@ -41,14 +46,15 @@ type DashboardShellProps = {
   title: string;
   subtitle: string;
   children: ReactNode;
+  cta?: { label: string; href: string };
 };
 
-export function DashboardShell({ user, title, subtitle, children }: DashboardShellProps) {
+export function DashboardShell({ user, title, subtitle, children, cta }: DashboardShellProps) {
   const nav = NAV_BY_ROLE[user.role] ?? [];
 
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
-      <header className="border-b border-line bg-paper">
+      <header className="relative z-40 border-b border-line bg-card/80 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
           <SigapLogo href="/" size="sm" variant="dark" />
 
@@ -67,6 +73,7 @@ export function DashboardShell({ user, title, subtitle, children }: DashboardShe
           </nav>
 
           <div className="flex items-center gap-4">
+            {user.role === 'Warga' ? <NotificationBell /> : null}
             <div className="hidden text-right sm:block">
               <p className="text-sm font-medium leading-tight">{user.nama}</p>
               <p className="text-xs leading-tight text-muted">
@@ -79,19 +86,97 @@ export function DashboardShell({ user, title, subtitle, children }: DashboardShe
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
-        <div className="mb-8 border-b border-line pb-6">
-          <h1 className="text-[24px] font-semibold leading-tight tracking-tight">{title}</h1>
-          <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted">{subtitle}</p>
-        </div>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        <section className="relative mb-6 overflow-hidden rounded-2xl border border-line">
+          <Image
+            src="/images/pexels-pamanjoe-21896936.jpg"
+            alt="Skyline Kota Surabaya dari udara"
+            fill
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            className="object-cover object-[50%_42%]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#08192b]/95 via-[#0d2138]/80 to-[#0d2138]/20" />
+          <div className="relative z-10 flex h-44 flex-col justify-center p-6 sm:h-52 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:p-8">
+            <div className="max-w-md">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300">
+                {ROLE_LABEL[user.role] ?? user.role} · SIGAP Surabaya
+              </p>
+              <h1 className="mt-2 text-2xl font-bold leading-tight text-white sm:text-3xl">
+                {title}
+              </h1>
+              <p className="mt-2 text-sm leading-relaxed text-white/85">{subtitle}</p>
+            </div>
+            {cta ? (
+              <Link
+                href={cta.href}
+                className="mt-4 inline-flex w-fit shrink-0 items-center gap-2 rounded-md bg-amber-400 px-5 py-3 text-sm font-semibold text-[#231400] shadow-lg transition-all hover:-translate-y-0.5 hover:bg-amber-300 sm:mt-0 sm:px-6 sm:text-base"
+              >
+                {cta.label}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </Link>
+            ) : null}
+          </div>
+        </section>
 
         {children}
       </main>
 
-      <footer className="border-t border-line py-5">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 text-xs text-muted sm:px-6">
-          <span>SIGAP — Sistem Informasi Gerak Aduan Publik, Kota Surabaya</span>
-          <InstallPrompt />
+      <footer className="border-t border-line bg-card">
+        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+          <div className="grid gap-6 sm:grid-cols-3">
+            <div>
+              <SigapLogo href="/" size="sm" variant="dark" />
+              <p className="mt-3 text-xs leading-relaxed text-muted">
+                Sistem Informasi Gerak Aduan Publik — satu kanal resmi aspirasi dan aduan
+                masyarakat Kota Surabaya.
+              </p>
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+                Navigasi
+              </p>
+              <ul className="mt-2 space-y-1.5 text-sm">
+                {nav.slice(0, 4).map((item) =>
+                  item.href ? (
+                    <li key={item.label}>
+                      <Link href={item.href} className="text-ink/80 hover:text-brand">
+                        {item.label}
+                      </Link>
+                    </li>
+                  ) : (
+                    <li key={item.label} className="text-muted">
+                      {item.label}
+                    </li>
+                  ),
+                )}
+              </ul>
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+                Kontak
+              </p>
+              <p className="mt-2 text-sm text-ink/80">Pemerintah Kota Surabaya</p>
+              <p className="text-xs text-muted">Jl. Tunjungan No. 1-3, Surabaya 60275</p>
+              <p className="mt-1 text-xs text-muted">saran@surabaya.go.id</p>
+            </div>
+          </div>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-xs text-muted">
+            <span>© 2026 Pemerintah Kota Surabaya · SIGAP</span>
+            <InstallPrompt />
+          </div>
         </div>
       </footer>
     </div>

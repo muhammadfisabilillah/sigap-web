@@ -56,8 +56,19 @@ export async function POST(
       );
     }
 
+    if (aduan.status !== 'DiteruskanKecamatan' && aduan.status !== 'MenungguTinjauan') {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            'Tindak lanjut hanya dapat dicatat setelah aduan diteruskan ke kecamatan atau sedang menunggu tinjauan.',
+        },
+        { status: 409 },
+      );
+    }
+
     const statusBaru =
-      aduan.status === 'MenungguVerifikasi' ? 'Diproses' : 'MenungguTinjauan';
+      aduan.status === 'DiteruskanKecamatan' ? 'MenungguTinjauan' : 'MenungguTinjauan';
 
     await db.orm.public.Aduan.where({ id: aduanId }).update({ status: statusBaru });
 

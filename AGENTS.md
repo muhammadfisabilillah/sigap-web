@@ -14,9 +14,9 @@ PWA pengaduan masyarakat Kota Surabaya. Tiga aktor: **Warga**, **Admin** (verifi
 
 ## Status implementasi
 
-Yang sudah berjalan: data contract Prisma 8 (11 entitas) + migrasi + seed referensi, autentikasi (register/login/logout, sesi DB-backed, guard peran), API dan halaman verifikasi domisili (upload KTP), UI login/registrasi, redirect per peran, serta dashboard awal `/warga`, `/admin`, `/petugas`, dan `/domisili`. Halaman `/domisili/status` masih memakai data mock.
+Yang sudah berjalan: data contract Prisma 8 (11 entitas) + migrasi + seed referensi, autentikasi (register/login/logout, sesi DB-backed, guard peran), API dan halaman verifikasi domisili (upload KTP), UI login/registrasi, redirect per peran, dashboard `/warga`, `/admin`, `/petugas`, `/domisili`, dan `/domisili/status` (data nyata), modul aduan (buat/detail/laporan publik), upvote, peta Leaflet, profil warga, panduan/onboarding, PWA (manifest + service worker), dan notifikasi (API `/api/notifikasi`, lonceng di header, halaman `/notifikasi` dengan tandai dibaca).
 
-Belum diimplementasikan: modul aduan, upvote, peta/geolocation, notifikasi, dashboard admin/petugas yang fungsional, dan PWA. Jangan asumsikan perilaku dari nama folder.
+Belum diimplementasikan: alur status aduan berurutan (Prioritas 4b), pembaruan status real-time tanpa refresh, uji E2E/HP, deploy production, dan pembersihan data test. Jangan asumsikan perilaku dari nama folder.
 
 ## Commands
 

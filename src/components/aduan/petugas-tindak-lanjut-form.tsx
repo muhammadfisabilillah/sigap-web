@@ -3,7 +3,13 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export function PetugasTindakLanjutForm({ aduanId }: { aduanId: number }) {
+export function PetugasTindakLanjutForm({
+  aduanId,
+  currentStatus,
+}: {
+  aduanId: number;
+  currentStatus: string;
+}) {
   const router = useRouter();
   const [catatan, setCatatan] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +50,17 @@ export function PetugasTindakLanjutForm({ aduanId }: { aduanId: number }) {
     }
   }
 
+  const bisaTindakLanjut =
+    currentStatus === 'DiteruskanKecamatan' || currentStatus === 'MenungguTinjauan';
+
+  if (!bisaTindakLanjut) {
+    return (
+      <p className="text-sm text-muted">
+        Tindak lanjut baru dapat dicatat setelah aduan diteruskan ke kecamatan oleh Admin.
+      </p>
+    );
+  }
+
   return (
     <div>
       {error ? (
@@ -71,7 +88,10 @@ export function PetugasTindakLanjutForm({ aduanId }: { aduanId: number }) {
             disabled={isLoading}
             className="w-full rounded-md border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/70 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15 disabled:bg-paper"
           />
-          <p className="mt-1 text-xs text-muted">Minimal 10 karakter. Warga akan menerima notifikasi.</p>
+          <p className="mt-1 text-xs text-muted">
+            Minimal 10 karakter. Catatan ini mengubah status aduan ke &quot;Menunggu tinjauan&quot; dan
+            mengirim notifikasi ke warga.
+          </p>
         </div>
 
         <button

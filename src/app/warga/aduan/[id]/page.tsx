@@ -8,6 +8,8 @@ import { requireRole } from '@/src/lib/auth/guard';
 import { db } from '@/src/prisma/db';
 import { enrichAduan, type AduanRow } from '@/src/lib/aduan/query';
 import { AduanDetailBody } from '@/src/components/aduan/aduan-detail-body';
+import { AduanLiveRefresh } from '@/src/components/aduan/aduan-live-refresh';
+import { UpvoteButton } from '@/src/components/aduan/upvote-button';
 
 export const metadata: Metadata = {
   title: 'Detail Aduan',
@@ -55,7 +57,13 @@ async function DetailAduan({ params }: { params: Promise<{ id: string }> }) {
         ← Kembali ke Aduan Saya
       </Link>
 
-      <AduanDetailBody item={item} riwayat={riwayat} />
+      <AduanLiveRefresh aduanId={item.id} initialStatus={item.status} />
+
+      <AduanDetailBody
+        item={item}
+        riwayat={riwayat}
+        upvote={<UpvoteButton aduanId={item.id} initialTotal={item.totalUpvote} />}
+      />
     </DashboardShell>
   );
 }

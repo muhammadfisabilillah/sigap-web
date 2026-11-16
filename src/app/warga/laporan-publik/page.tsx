@@ -13,24 +13,38 @@ export const metadata: Metadata = {
   title: 'Laporan Publik',
 };
 
-export default function LaporanPublikPage() {
+export default function LaporanPublikPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ urut?: string }>;
+}) {
   return (
     <Suspense fallback={<PageSkeleton />}>
-      <LaporanPublik />
+      <LaporanPublik searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function LaporanPublik() {
+async function LaporanPublik({
+  searchParams,
+}: {
+  searchParams: Promise<{ urut?: string }>;
+}) {
   await connection();
   const user = await requireRole('Warga');
-  const aduan = await getAduanPublik();
+  const { urut } = await searchParams;
+  const byUpvote = urut === 'dukungan';
+
+  const semua = await getAduanPublik();
+  const aduan = byUpvote
+    ? semua.slice().sort((a, b) => b.totalUpvote - a.totalUpvote)
+    : semua;
 
   return (
     <DashboardShell
       user={user}
       title="Laporan Publik"
-      subtitle="Aduan dari warga Surabaya. Klik aduan untuk melihat detail dan riwayat penanganannya."
+      subtitle="Aduan dari warga Surabaya. Dukung aduan penting di kecamatan Anda agar diprioritaskan."
     >
       <section className="mb-6 border border-line bg-card p-4 sm:p-5">
         <h2 className="mb-1 text-sm font-semibold text-ink">Peta aduan</h2>
@@ -51,7 +65,29 @@ async function LaporanPublik() {
         />
       </section>
 
-      <div className="mb-4 flex justify-end">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex gap-2">
+          <Link
+            href="/warga/laporan-publik"
+            className={`rounded-md border px-3 py-1.5 text-sm ${
+              !byUpvote
+                ? 'border-brand bg-brand text-white'
+                : 'border-line bg-card text-muted hover:text-ink'
+            }`}
+          >
+            Terbaru
+          </Link>
+          <Link
+            href="/warga/laporan-publik?urut=dukungan"
+            className={`rounded-md border px-3 py-1.5 text-sm ${
+              byUpvote
+                ? 'border-brand bg-brand text-white'
+                : 'border-line bg-card text-muted hover:text-ink'
+            }`}
+          >
+            Paling banyak dukungan
+          </Link>
+        </div>
         <Link
           href="/warga/aduan/baru"
           className="rounded-md bg-brand px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-hover"

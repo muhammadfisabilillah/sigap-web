@@ -15,11 +15,13 @@ export function AduanDetailBody({
   riwayat,
   action,
   actionTitle = 'Tindakan',
+  upvote,
 }: {
   item: AduanItem;
   riwayat: RiwayatRow[];
   action?: ReactNode;
   actionTitle?: string;
+  upvote?: ReactNode;
 }) {
   const riwayatTerurut = riwayat
     .slice()
@@ -36,9 +38,15 @@ export function AduanDetailBody({
                 {STATUS_ADUAN_LABEL[item.status] ?? item.status}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-xs font-medium text-muted">Dukungan warga</p>
-              <p className="mt-0.5 text-lg font-semibold text-ink">{item.totalUpvote}</p>
+            <div>
+              {upvote ? (
+                <div className="flex flex-col items-end">{upvote}</div>
+              ) : (
+                <div className="text-right">
+                  <p className="text-xs font-medium text-muted">Dukungan warga</p>
+                  <p className="mt-0.5 text-lg font-semibold text-ink">{item.totalUpvote}</p>
+                </div>
+              )}
             </div>
           </div>
 

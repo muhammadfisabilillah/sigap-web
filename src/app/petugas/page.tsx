@@ -4,6 +4,7 @@ import { connection } from 'next/server';
 import { DashboardShell } from '@/src/components/dashboard/dashboard-shell';
 import { ModuleCard, StatCard } from '@/src/components/dashboard/dashboard-cards';
 import { PageSkeleton } from '@/src/components/dashboard/page-skeleton';
+import { BarChart } from '@/src/components/dashboard/bar-chart';
 import { requireRole } from '@/src/lib/auth/guard';
 import { getPengajuanDomisili } from '@/src/lib/verifikasi/query';
 import { db } from '@/src/prisma/db';
@@ -22,6 +23,15 @@ export default function PetugasPage() {
 
 const STATUS_AKTIF = new Set(['DiteruskanKecamatan', 'MenungguTinjauan']);
 
+const STATUS_LABEL: Record<string, string> = {
+  MenungguVerifikasi: 'Menunggu verifikasi',
+  Diproses: 'Diproses',
+  DiteruskanKecamatan: 'Diteruskan kecamatan',
+  MenungguTinjauan: 'Menunggu tinjauan',
+  Selesai: 'Selesai',
+  Ditolak: 'Ditolak',
+};
+
 async function PetugasDashboard() {
   await connection();
   const user = await requireRole('Petugas');
@@ -39,6 +49,14 @@ async function PetugasDashboard() {
     ? (await getPengajuanDomisili(user, 'Menunggu')).length
     : 0;
 
+  const statusHitung = new Map<string, number>();
+  for (const aduan of aduanWilayah) {
+    statusHitung.set(aduan.status, (statusHitung.get(aduan.status) ?? 0) + 1);
+  }
+  const chartStatus = Object.entries(STATUS_LABEL)
+    .map(([value, label]) => ({ label, value: statusHitung.get(value) ?? 0 }))
+    .filter((item) => item.value > 0);
+
   return (
     <DashboardShell
       user={user}
@@ -48,6 +66,7 @@ async function PetugasDashboard() {
           ? `Wilayah kerja: Kecamatan ${kecamatan.nama}.`
           : 'Wilayah kerja belum ditetapkan. Hubungi admin untuk penugasan kecamatan.'
       }
+      cta={{ label: 'Aduan Wilayah', href: '/petugas/aduan' }}
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
@@ -68,24 +87,36 @@ async function PetugasDashboard() {
         />
       </div>
 
+      <div className="mt-4">
+        <BarChart
+          title="Status aduan wilayah"
+          subtitle={kecamatan ? `Kecamatan ${kecamatan.nama}` : 'Belum ada wilayah'}
+          items={chartStatus}
+        />
+      </div>
+
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <ModuleCard
+          index={0}
           title="Aduan wilayah"
           description="Lihat aduan yang masuk ke kecamatan Anda dan perbarui progres penanganan lapangan."
           href="/petugas/aduan"
           cta="Lihat aduan wilayah"
         />
         <ModuleCard
+          index={1}
           title="Validasi domisili"
           description="Validasi kebenaran domisili warga di wilayah kecamatan Anda."
           href="/petugas/verifikasi-domisili"
           cta="Verifikasi sekarang"
         />
         <ModuleCard
+          index={2}
           title="Riwayat tindak lanjut"
           description="Jejak perubahan status aduan yang Anda tangani. Tersedia di detail tiap aduan."
         />
         <ModuleCard
+          index={3}
           title="Notifikasi"
           description="Pemberitahuan aduan baru yang diteruskan ke wilayah Anda."
         />
