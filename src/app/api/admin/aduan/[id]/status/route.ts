@@ -3,7 +3,10 @@ import { db } from '@/src/prisma/db';
 import { getSessionUser } from '@/src/lib/auth/session';
 import {
   STATUS_ADUAN_TO_RIWAYAT,
+  bolehTransisiAdmin,
+  getAksiAdmin,
   isStatusAduan,
+  isStatusFinal,
 } from '@/src/lib/aduan/transitions';
 
 export async function POST(
@@ -58,9 +61,22 @@ export async function POST(
         { status: 409 },
       );
     }
-    if (aduan.status === 'Selesai' || aduan.status === 'Ditolak') {
+    if (isStatusFinal(aduan.status)) {
       return NextResponse.json(
         { ok: false, error: 'Aduan ini sudah selesai dan tidak dapat diubah lagi' },
+        { status: 409 },
+      );
+    }
+    if (!bolehTransisiAdmin(aduan.status, status)) {
+      const aksi = getAksiAdmin(aduan.status).map((item) => item.label);
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            aksi.length > 0
+              ? `Transisi status tidak diizinkan dari status saat ini. Aksi yang tersedia: ${aksi.join(', ')}.`
+              : 'Status aduan ini tidak dapat diubah oleh Admin pada tahap ini.',
+        },
         { status: 409 },
       );
     }

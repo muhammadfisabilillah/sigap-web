@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { SigapLogo } from '@/src/components/brand/sigap-logo';
 import { LogoutButton } from '@/src/components/dashboard/logout-button';
 import { InstallPrompt } from '@/src/components/pwa/install-prompt';
+import { NotificationBell } from '@/src/components/notifikasi/notification-bell';
 import type { SessionUser } from '@/src/lib/auth/session';
 
 type NavItem = {
@@ -17,6 +18,7 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
     { label: 'Domisili', href: '/domisili' },
     { label: 'Aduan Saya', href: '/warga/aduan' },
     { label: 'Laporan Publik', href: '/warga/laporan-publik' },
+    { label: 'Notifikasi', href: '/notifikasi' },
     { label: 'Panduan', href: '/panduan' },
     { label: 'Profil', href: '/warga/profil' },
   ],
@@ -52,7 +54,7 @@ export function DashboardShell({ user, title, subtitle, children, cta }: Dashboa
 
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
-      <header className="border-b border-line bg-card/80 backdrop-blur">
+      <header className="relative z-40 border-b border-line bg-card/80 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
           <SigapLogo href="/" size="sm" variant="dark" />
 
@@ -71,6 +73,7 @@ export function DashboardShell({ user, title, subtitle, children, cta }: Dashboa
           </nav>
 
           <div className="flex items-center gap-4">
+            {user.role === 'Warga' ? <NotificationBell /> : null}
             <div className="hidden text-right sm:block">
               <p className="text-sm font-medium leading-tight">{user.nama}</p>
               <p className="text-xs leading-tight text-muted">

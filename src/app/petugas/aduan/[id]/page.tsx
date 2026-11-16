@@ -84,7 +84,7 @@ async function PetugasDetailAduan({ params }: { params: Promise<{ id: string }> 
               Aduan ini sudah selesai dan tidak dapat ditindaklanjuti lagi.
             </p>
           ) : (
-            <PetugasTindakLanjutForm aduanId={item.id} />
+            <PetugasTindakLanjutForm aduanId={item.id} currentStatus={item.status} />
           )
         }
       />

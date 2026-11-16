@@ -45,6 +45,7 @@ Fokus: **siap presentasi**. Urutan pengerjaan:
 - [x] Profil warga didesain ulang (foto banner, badge status, kartu identitas) + NIK manual & tersimpan di database (migrasi)
 - [x] Upvote: lintas kecamatan, angka otomatis update tanpa refresh, label "DUKUNGAN WARGA" di detail aduan
 - [x] `lint` + `build` lolos (35 route)
+- [x] Notifikasi: API `/api/notifikasi`, lonceng di header (badge jumlah belum dibaca, polling 20 detik), halaman `/notifikasi` (tandai dibaca / tandai semua)
 
 ---
 
@@ -80,19 +81,19 @@ Fokus: **siap presentasi**. Urutan pengerjaan:
 - [x] API upvote/unvote (`POST /api/aduan/[id]/upvote`), jaga `totalUpvote` tetap konsisten
 - [x] Tampilkan jumlah upvote + urutan prioritas di daftar laporan publik
 - [x] Buat notifikasi saat status aduan berubah
-- [ ] Halaman/icon notifikasi di header (belum dibaca / sudah dibaca)
+- [x] Halaman/icon notifikasi di header (belum dibaca / sudah dibaca)
 
-## Prioritas 4b — Otomatisasi Status Aduan (todo berikutnya)
+## Prioritas 4b — Otomatisasi Status Aduan
 
 Tujuan: status aduan mengalir berurutan tanpa harus pilih manual dari daftar semua status.
 
-- [ ] **Alur status berurutan (workflow)** — batasi transisi hanya ke langkah berikutnya:
+- [x] **Alur status berurutan (workflow)** — batasi transisi hanya ke langkah berikutnya:
   `MenungguVerifikasi → Diproses → DiteruskanKecamatan → MenungguTinjauan → Selesai`
   (Ditolak hanya dari langkah awal, Selesai/Ditolak adalah status akhir dan terkunci)
-- [ ] **Tombol aksi mengikuti status saat ini** di halaman detail Admin — tampilkan hanya aksi langkah berikutnya, bukan dropdown semua status
-- [ ] **Petugas tindak lanjut otomatis membuat status maju** — satu klik catat tindak lanjut langsung mengubah status ke langkah berikutnya dan mencatat riwayatnya
-- [ ] **Notifikasi otomatis ke warga setiap status berubah** — sudah dibuat di database, tinggal ditampilkan: lonceng notifikasi di header + halaman `/notifikasi` (belum dibaca / tandai dibaca)
-- [ ] **Warga melihat status terbaru tanpa refresh** — polling ringan (mis. cek tiap 30 detik) atau refresh saat kembali ke halaman detail
+- [x] **Tombol aksi mengikuti status saat ini** di halaman detail Admin — tampilkan hanya aksi langkah berikutnya, bukan dropdown semua status
+- [x] **Petugas tindak lanjut otomatis membuat status maju** — catat tindak lanjut mengubah status ke `MenungguTinjauan` (dari `DiteruskanKecamatan`) dan mencatat riwayat + notifikasi
+- [x] **Notifikasi otomatis ke warga setiap status berubah** — lonceng notifikasi di header + halaman `/notifikasi` (belum dibaca / tandai dibaca)
+- [x] **Warga melihat status terbaru tanpa refresh** — polling ringan (cek tiap 30 detik, refresh saat status berubah)
 - [ ] (Opsional) **Eskalasi otomatis** — aduan menunggu verifikasi lebih dari 3 hari otomatis ditandai mendesak di dashboard Admin; aduan menunggu tinjauan lebih dari 7 hari otomatis diingatkan
 
 ## Prioritas 5 — Peta & PWA

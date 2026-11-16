@@ -8,6 +8,7 @@ import { requireRole } from '@/src/lib/auth/guard';
 import { db } from '@/src/prisma/db';
 import { enrichAduan, type AduanRow } from '@/src/lib/aduan/query';
 import { AduanDetailBody } from '@/src/components/aduan/aduan-detail-body';
+import { AduanLiveRefresh } from '@/src/components/aduan/aduan-live-refresh';
 import { UpvoteButton } from '@/src/components/aduan/upvote-button';
 
 export const metadata: Metadata = {
@@ -55,6 +56,8 @@ async function DetailAduan({ params }: { params: Promise<{ id: string }> }) {
       <Link href="/warga/aduan" className="mb-5 inline-block text-sm font-medium text-brand hover:underline">
         ← Kembali ke Aduan Saya
       </Link>
+
+      <AduanLiveRefresh aduanId={item.id} initialStatus={item.status} />
 
       <AduanDetailBody
         item={item}

@@ -76,7 +76,7 @@ async function AdminDetailAduan({ params }: { params: Promise<{ id: string }> })
               Aduan ini sudah selesai dan tidak dapat diubah lagi.
             </p>
           ) : (
-            <AdminStatusForm aduanId={item.id} instansi={instansi} />
+            <AdminStatusForm aduanId={item.id} currentStatus={item.status} instansi={instansi} />
           )
         }
       />
