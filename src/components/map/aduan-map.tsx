@@ -47,11 +47,12 @@ export function AduanMap({
       if (!mapRef.current) {
         const map = L.map(containerRef.current, { scrollWheelZoom: false });
         mapRef.current = map;
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          maxZoom: 19,
-        }).addTo(map);
+         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+           attribution:
+             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+           maxZoom: 19,
+           subdomains: 'abcd',
+         }).addTo(map);
         map.on('focus', () => map.scrollWheelZoom.enable());
         map.on('blur', () => map.scrollWheelZoom.disable());
         map.on('click', (event: { latlng: { lat: number; lng: number } }) => {
@@ -99,9 +100,9 @@ export function AduanMap({
       }
     }
 
-    init().catch(() => {
-      // Peta tidak tersedia (mis. Leaflet gagal dimuat) — halaman tetap berjalan.
-    });
+     init().catch((err) => {
+       console.error('Gagal memuat peta:', err);
+     });
 
     return () => {
       cancelled = true;
