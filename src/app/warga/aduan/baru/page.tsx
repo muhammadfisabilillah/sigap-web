@@ -46,15 +46,19 @@ async function BuatAduan() {
     );
   }
 
-  const [kategoriRows, kecamatanRows] = await Promise.all([
+  const [kategoriRows, kecamatanRows, instansiRows] = await Promise.all([
     db.orm.public.Kategori.all(),
     db.orm.public.Kecamatan.all(),
+    db.orm.public.Instansi.all(),
   ]);
 
   const kategori = kategoriRows
     .map((row) => ({ id: row.id, nama: row.nama }))
     .sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
   const kecamatan = kecamatanRows
+    .map((row) => ({ id: row.id, nama: row.nama }))
+    .sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
+  const instansi = instansiRows
     .map((row) => ({ id: row.id, nama: row.nama }))
     .sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
 
@@ -68,6 +72,7 @@ async function BuatAduan() {
         <AduanForm
           kategori={kategori}
           kecamatan={kecamatan}
+          instansi={instansi}
           defaultKecamatanId={user.kecamatanId ?? null}
         />
       </div>

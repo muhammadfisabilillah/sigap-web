@@ -60,6 +60,8 @@ export async function POST(request: Request) {
   const deskripsi = String(formData.get('deskripsi') ?? '').trim();
   const kategoriId = Number(formData.get('kategoriId'));
   const kecamatanId = Number(formData.get('kecamatanId'));
+  const instansiIdRaw = formData.get('instansiId');
+  const instansiId = instansiIdRaw ? Number(instansiIdRaw) : null;
   const latitude = Number(formData.get('latitude'));
   const longitude = Number(formData.get('longitude'));
   const files = formData.getAll('foto').filter((f): f is File => f instanceof File);
@@ -154,6 +156,7 @@ export async function POST(request: Request) {
       latitude,
       longitude,
       status: 'MenungguVerifikasi',
+      instansiId: instansiId ?? undefined,
       totalUpvote: 0,
     });
 

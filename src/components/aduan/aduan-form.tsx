@@ -9,6 +9,7 @@ type Option = { id: number; nama: string };
 type AduanFormProps = {
   kategori: Option[];
   kecamatan: Option[];
+  instansi: Option[];
   defaultKecamatanId: number | null;
 };
 
@@ -100,7 +101,7 @@ function pesanGeolocationError(error: GeolocationPositionError): string {
   }
 }
 
-export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanFormProps) {
+export function AduanForm({ kategori, kecamatan, instansi, defaultKecamatanId }: AduanFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const geocodeRequestRef = useRef(0);
@@ -108,6 +109,7 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
   const [judul, setJudul] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [kategoriId, setKategoriId] = useState('');
+  const [instansiId, setInstansiId] = useState('');
   const [kecamatanId, setKecamatanId] = useState(
     defaultKecamatanId ? String(defaultKecamatanId) : '',
   );
@@ -309,6 +311,7 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
       body.append('deskripsi', deskripsi.trim());
       body.append('kategoriId', kategoriId);
       body.append('kecamatanId', kecamatanId);
+      if (instansiId) body.append('instansiId', instansiId);
       body.append('latitude', latitude);
       body.append('longitude', longitude);
       for (const file of files) body.append('foto', file);
@@ -412,6 +415,27 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
             >
               <option value="">{kategori.length === 0 ? 'Belum tersedia' : 'Pilih kategori'}</option>
               {kategori.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.nama}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="instansiId" className="mb-1.5 block text-sm font-medium text-ink">
+              Instansi (opsional)
+            </label>
+            <select
+              id="instansiId"
+              name="instansiId"
+              value={instansiId}
+              onChange={(event) => setInstansiId(event.target.value)}
+              disabled={isLoading || instansi.length === 0}
+              className={inputClass}
+            >
+              <option value="">{instansi.length === 0 ? 'Belum tersedia' : 'Pilih instansi'}</option>
+              {instansi.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.nama}
                 </option>
