@@ -17,6 +17,7 @@ const SURABAYA_CENTER: [number, number] = [-7.2575, 112.7521];
 
 // ============================================================================
 // FormLaporan Component (SCRUM-87: Integrasi Geolocation API & Peta Leaflet)
+// SCRUM-109: Kelurahan & kecamatan terisi otomatis dari titik peta
 // ============================================================================
 export function FormLaporan() {
   // --- Form Field States ---
@@ -26,6 +27,12 @@ export function FormLaporan() {
   const [alamatDetail, setAlamatDetail] = useState("");
   const [fotoBukti, setFotoBukti] = useState<File | null>(null);
   const [fotoPreview, setFotoPreview] = useState<string | null>(null);
+
+  // --- Wilayah States (Task SCRUM-109) ---
+  const [kelurahan, setKelurahan] = useState("");
+  const [kecamatan, setKecamatan] = useState("");
+  const [isResolvingArea, setIsResolvingArea] = useState(false);
+  const [areaError, setAreaError] = useState<string | null>(null);
 
   // --- Geolocation States (Task SCRUM-87) ---
   const [coords, setCoords] = useState<GeoCoords>({
@@ -290,6 +297,47 @@ export function FormLaporan() {
   }, [coords.latitude, coords.longitude, updateMapPosition]);
 
   /**
+   * SCRUM-109: Isi kelurahan & kecamatan otomatis setiap titik lokasi berubah
+   * (klik peta, geser pin, atau GPS). Di-debounce agar tidak membebani Nominatim.
+   */
+  useEffect(() => {
+    if (!coords.latitude || !coords.longitude) return;
+
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      setIsResolvingArea(true);
+      setAreaError(null);
+      try {
+        const res = await fetch(
+          `/api/geocode/reverse?lat=${coords.latitude}&lng=${coords.longitude}`,
+          { signal: controller.signal }
+        );
+        const data = await res.json();
+        if (!data.ok) {
+          setAreaError(data.error ?? "Gagal mendeteksi wilayah.");
+          return;
+        }
+        setKelurahan(data.kelurahan || "");
+        setKecamatan(data.kecamatan || "");
+        if (!data.kelurahan) {
+          setAreaError("Kelurahan tidak terdeteksi otomatis, silakan isi manual.");
+        }
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          setAreaError("Gagal menghubungi layanan wilayah. Isi kelurahan manual.");
+        }
+      } finally {
+        if (!controller.signal.aborted) setIsResolvingArea(false);
+      }
+    }, 600);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [coords.latitude, coords.longitude]);
+
+  /**
    * Handle Upload Foto Bukti
    */
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -333,6 +381,8 @@ export function FormLaporan() {
       kategori,
       deskripsi,
       alamatDetail,
+      kelurahan,
+      kecamatan,
       latitude: Number(coords.latitude),
       longitude: Number(coords.longitude),
       accuracy: coords.accuracy,
@@ -651,6 +701,40 @@ export function FormLaporan() {
               />
             </div>
           </div>
+
+          {/* SCRUM-109: Kelurahan & Kecamatan (terisi otomatis dari titik peta, tetap bisa diedit) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="kelurahan" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
+                Kelurahan{" "}
+                {isResolvingArea && <span className="normal-case text-amber-600">(mendeteksi...)</span>}
+              </label>
+              <input
+                id="kelurahan"
+                name="kelurahan"
+                type="text"
+                value={kelurahan}
+                onChange={(e) => setKelurahan(e.target.value)}
+                placeholder="Terisi otomatis dari peta"
+                className="w-full rounded-xl border border-slate-300 bg-white/95 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#183B7E] focus:outline-none focus:ring-1 focus:ring-[#183B7E]/20 shadow-xs"
+              />
+            </div>
+            <div>
+              <label htmlFor="kecamatan" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
+                Kecamatan
+              </label>
+              <input
+                id="kecamatan"
+                name="kecamatan"
+                type="text"
+                value={kecamatan}
+                onChange={(e) => setKecamatan(e.target.value)}
+                placeholder="Terisi otomatis dari peta"
+                className="w-full rounded-xl border border-slate-300 bg-white/95 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#183B7E] focus:outline-none focus:ring-1 focus:ring-[#183B7E]/20 shadow-xs"
+              />
+            </div>
+          </div>
+          {areaError && <p className="text-xs text-amber-700">{areaError}</p>}
 
           {/* Banner Status Akurasi & Link Google Maps */}
           {geoSuccess && coords.latitude && coords.longitude && (
