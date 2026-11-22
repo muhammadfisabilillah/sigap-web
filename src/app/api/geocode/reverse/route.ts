@@ -107,11 +107,23 @@ export async function GET(request: Request) {
         displayName.split(',')[0] ??
         '').trim();
 
+    // BARU: kelurahan & kecamatan eksplisit (SCRUM-109).
+    // Di data OSM Indonesia, kelurahan biasanya di village, kadang suburb/neighbourhood.
+    const kelurahan = (
+      address['village'] ??
+      address['suburb'] ??
+      address['neighbourhood'] ??
+      ''
+    ).trim();
+    const kecamatan = (address['city_district'] ?? address['municipality'] ?? '').trim();
+
     return NextResponse.json({
       ok: true,
       candidates,
       detectedLabel,
       displayName,
+      kelurahan, // BARU
+      kecamatan, // BARU
     });
   } catch {
     return NextResponse.json(
