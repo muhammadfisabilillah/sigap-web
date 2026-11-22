@@ -16,9 +16,94 @@ const MAX_PHOTOS = 3;
 const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_SIZE = 5 * 1024 * 1024;
 
+type ReverseGeocodeResponse = {
+  ok?: boolean;
+  candidates?: string[];
+  detectedLabel?: string;
+  displayName?: string;
+  error?: string;
+};
+
+// Centroid 31 kecamatan Surabaya untuk fallback Haversine
+const KECAMATAN_CENTROIDS: { nama: string; lat: number; lng: number }[] = [
+  { nama: 'Asemrowo', lat: -7.2371, lng: 112.6872 },
+  { nama: 'Benowo', lat: -7.2548, lng: 112.6367 },
+  { nama: 'Bubutan', lat: -7.2458, lng: 112.7281 },
+  { nama: 'Bulak', lat: -7.2167, lng: 112.7917 },
+  { nama: 'Dukuh Pakis', lat: -7.2871, lng: 112.7076 },
+  { nama: 'Gayungan', lat: -7.3372, lng: 112.7295 },
+  { nama: 'Genteng', lat: -7.2578, lng: 112.7375 },
+  { nama: 'Gubeng', lat: -7.2706, lng: 112.7572 },
+  { nama: 'Gunung Anyar', lat: -7.3519, lng: 112.8019 },
+  { nama: 'Jambangan', lat: -7.3444, lng: 112.7044 },
+  { nama: 'Karang Pilang', lat: -7.3425, lng: 112.6797 },
+  { nama: 'Kenjeran', lat: -7.2186, lng: 112.7769 },
+  { nama: 'Krembangan', lat: -7.2283, lng: 112.7272 },
+  { nama: 'Lakarsantri', lat: -7.3131, lng: 112.6481 },
+  { nama: 'Mulyorejo', lat: -7.2644, lng: 112.7853 },
+  { nama: 'Pabean Cantikan', lat: -7.2228, lng: 112.7375 },
+  { nama: 'Pakal', lat: -7.2572, lng: 112.6181 },
+  { nama: 'Rungkut', lat: -7.3231, lng: 112.7819 },
+  { nama: 'Sambikerep', lat: -7.2794, lng: 112.6567 },
+  { nama: 'Sawahan', lat: -7.2878, lng: 112.7236 },
+  { nama: 'Semampir', lat: -7.2311, lng: 112.7558 },
+  { nama: 'Simokerto', lat: -7.2456, lng: 112.7483 },
+  { nama: 'Sukolilo', lat: -7.2919, lng: 112.7961 },
+  { nama: 'Sukomanunggal', lat: -7.2706, lng: 112.6967 },
+  { nama: 'Tambaksari', lat: -7.2522, lng: 112.7675 },
+  { nama: 'Tandes', lat: -7.2619, lng: 112.6719 },
+  { nama: 'Tegalsari', lat: -7.2756, lng: 112.7347 },
+  { nama: 'Tenggilis Mejoyo', lat: -7.3317, lng: 112.7636 },
+  { nama: 'Wiyung', lat: -7.3156, lng: 112.6908 },
+  { nama: 'Wonocolo', lat: -7.3331, lng: 112.7378 },
+  { nama: 'Wonokromo', lat: -7.3053, lng: 112.7336 },
+];
+
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/** Normalisasi nama kecamatan: hapus awalan, huruf kecil, hapus tanda baca. */
+function normalisasiNamaKecamatan(nama: string): string {
+  return nama
+    .replace(/^(?:kecamatan|kec)\.?\s*/i, '')
+    .trim()
+    .toLocaleLowerCase('id')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Versi tanpa spasi — untuk mendeteksi "Karangpilang" ↔ "Karang Pilang". */
+function tanpaSpasi(nama: string): string {
+  return normalisasiNamaKecamatan(nama).replace(/\s/g, '');
+}
+
+function pesanGeolocationError(error: GeolocationPositionError): string {
+  switch (error.code) {
+    case GeolocationPositionError.PERMISSION_DENIED:
+      return 'Izin lokasi ditolak. Aktifkan izin lokasi di browser, atau isi koordinat secara manual.';
+    case GeolocationPositionError.POSITION_UNAVAILABLE:
+      return 'Lokasi tidak tersedia dari perangkat. Coba lagi, atau isi koordinat secara manual.';
+    case GeolocationPositionError.TIMEOUT:
+      return 'Deteksi lokasi memakan waktu terlalu lama. Coba lagi, atau isi koordinat secara manual.';
+    default:
+      return 'Tidak dapat membaca lokasi. Coba lagi, atau isi koordinat secara manual.';
+  }
+}
+
 export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const geocodeRequestRef = useRef(0);
 
   const [judul, setJudul] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
@@ -31,6 +116,8 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
   const [files, setFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [locationInfo, setLocationInfo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -62,6 +149,99 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
     setFiles(selected);
   }
 
+  async function syncKecamatan(lat: number, lng: number) {
+    const requestId = ++geocodeRequestRef.current;
+    setIsGeocoding(true);
+    setLocationInfo(null);
+
+    try {
+      const url = `/api/geocode/reverse?lat=${encodeURIComponent(lat.toFixed(6))}&lng=${encodeURIComponent(lng.toFixed(6))}`;
+      const response = await fetch(url, { cache: 'no-store' });
+      const data = (await response.json().catch(() => null)) as ReverseGeocodeResponse | null;
+
+      if (requestId !== geocodeRequestRef.current) return;
+
+      if (!response.ok || !data?.ok) {
+        setKecamatanId('');
+        setLocationInfo(
+          'Gagal mendeteksi kecamatan dari koordinat. Silakan pilih kecamatan secara manual.',
+        );
+        return;
+      }
+
+      const candidates = data.candidates ?? [];
+      const detectedLabel = (data.detectedLabel ?? '').trim();
+
+      // Coba cocokkan setiap kandidat ke opsi dropdown kecamatan
+      let matched: Option | undefined;
+      for (const candidate of candidates) {
+        const kunci = normalisasiNamaKecamatan(candidate);
+        const kunciTanpaSpasi = tanpaSpasi(candidate);
+        const found = kecamatan.find((item) => {
+          const itemNorm = normalisasiNamaKecamatan(item.nama);
+          const itemTanpaSpasi = tanpaSpasi(item.nama);
+          return itemNorm === kunci || itemTanpaSpasi === kunciTanpaSpasi;
+        });
+        if (found) {
+          matched = found;
+          break;
+        }
+      }
+
+      if (matched) {
+        setKecamatanId(String(matched.id));
+        setLocationInfo(`Kecamatan terdeteksi: ${matched.nama}.`);
+        return;
+      }
+
+      // Fallback Haversine: cari kecamatan Surabaya terdekat berdasarkan koordinat
+      let nearest: { nama: string; dist: number } | null = null;
+      for (const centroid of KECAMATAN_CENTROIDS) {
+        const dist = haversineKm(lat, lng, centroid.lat, centroid.lng);
+        if (!nearest || dist < nearest.dist) {
+          nearest = { nama: centroid.nama, dist };
+        }
+      }
+
+      if (nearest) {
+        // Cocokkan nama centroid ke opsi dropdown
+        const nearestMatch = kecamatan.find((item) => {
+          const itemTanpaSpasi = tanpaSpasi(item.nama);
+          const nearestTanpaSpasi = tanpaSpasi(nearest!.nama);
+          return (
+            normalisasiNamaKecamatan(item.nama) === normalisasiNamaKecamatan(nearest!.nama) ||
+            itemTanpaSpasi === nearestTanpaSpasi
+          );
+        });
+
+        if (nearestMatch) {
+          setKecamatanId(String(nearestMatch.id));
+          const areaLabel = detectedLabel || 'area ini';
+          setLocationInfo(
+            `Area ${areaLabel} — kecamatan otomatis diarahkan ke ${nearestMatch.nama}, silakan ubah jika perlu.`,
+          );
+          return;
+        }
+      }
+
+      // Tidak ada yang cocok sama sekali
+      setKecamatanId('');
+      setLocationInfo(
+        detectedLabel
+          ? `Lokasi terdeteksi di ${detectedLabel}, tidak termasuk kecamatan terdaftar. Silakan pilih kecamatan secara manual.`
+          : 'Kecamatan tidak terdeteksi dari koordinat. Silakan pilih kecamatan secara manual.',
+      );
+    } catch {
+      if (requestId !== geocodeRequestRef.current) return;
+      setKecamatanId('');
+      setLocationInfo(
+        'Gagal mendeteksi kecamatan dari koordinat. Silakan pilih kecamatan secara manual.',
+      );
+    } finally {
+      if (requestId === geocodeRequestRef.current) setIsGeocoding(false);
+    }
+  }
+
   function handleLocate() {
     if (!('geolocation' in navigator)) {
       setError('Perangkat Anda tidak mendukung deteksi lokasi. Isi koordinat secara manual.');
@@ -69,19 +249,24 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
     }
     setIsLocating(true);
     setError(null);
+    setLocationInfo(null);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(position.coords.latitude.toFixed(6));
-        setLongitude(position.coords.longitude.toFixed(6));
-        setIsLocating(false);
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setLatitude(lat.toFixed(6));
+        setLongitude(lng.toFixed(6));
+        try {
+          await syncKecamatan(lat, lng);
+        } finally {
+          setIsLocating(false);
+        }
       },
-      () => {
+      (geoError) => {
         setIsLocating(false);
-        setError(
-          'Tidak dapat membaca lokasi. Pastikan izin lokasi diberikan, atau isi koordinat secara manual.',
-        );
+        setError(pesanGeolocationError(geoError));
       },
-      { enableHighAccuracy: true, timeout: 10000 },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
     );
   }
 
@@ -266,10 +451,10 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
             <button
               type="button"
               onClick={handleLocate}
-              disabled={isLoading || isLocating}
+              disabled={isLoading || isLocating || isGeocoding}
               className="cursor-pointer rounded-md border border-brand px-3.5 py-2 text-sm font-medium text-brand hover:bg-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isLocating ? 'Membaca lokasi...' : 'Ambil lokasi saya'}
+              {isLocating ? 'Mendeteksi lokasi...' : 'Ambil lokasi saya'}
             </button>
             {latitude && longitude ? (
               <a
@@ -322,6 +507,16 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
             </div>
           </div>
 
+          {isGeocoding ? (
+            <p role="status" className="mt-3 text-xs text-brand">
+              Mendeteksi kecamatan dari koordinat...
+            </p>
+          ) : locationInfo ? (
+            <p role="status" className="mt-3 text-xs text-muted">
+              {locationInfo}
+            </p>
+          ) : null}
+
           <div className="mt-4">
             <p className="mb-1.5 text-sm font-medium text-ink">Pilih di peta</p>
             <p className="mb-2 text-xs text-muted">
@@ -347,6 +542,7 @@ export function AduanForm({ kategori, kecamatan, defaultKecamatanId }: AduanForm
                 setLatitude(lat.toFixed(6));
                 setLongitude(lng.toFixed(6));
                 setError(null);
+                void syncKecamatan(lat, lng);
               }}
             />
           </div>
