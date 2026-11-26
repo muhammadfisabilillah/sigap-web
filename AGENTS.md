@@ -12,9 +12,11 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 PWA pengaduan masyarakat Kota Surabaya. Tiga aktor: **Warga**, **Admin** (verifikasi aduan & domisili), **Petugas Kecamatan** (tindak lanjut lapangan). Detail fungsional & arsitektur ada di `README.md`.
 
-## Status scaffold
+## Status implementasi
 
-Proyek masih tahap awal: hanya `src/app/{layout.tsx,page.tsx,globals.css}` yang berisi. Folder `(auth)`, `(dashboard)/admin|petugas|warga`, `api/aduan|auth|verifikasi`, `components/*`, `lib`, `services`, `types`, dan `prisma/` masih kosong — namanya adalah rencana arsitektur, bukan kode yang jalan. Jangan asumsikan perilaku dari nama folder.
+Yang sudah berjalan: data contract Prisma 8 (11 entitas) + migrasi + seed referensi, autentikasi (register/login/logout, sesi DB-backed, guard peran), API dan halaman verifikasi domisili (upload KTP), UI login/registrasi, redirect per peran, dashboard `/warga`, `/admin`, `/petugas`, `/domisili`, dan `/domisili/status` (data nyata), modul aduan (buat/detail/laporan publik), upvote, peta Leaflet, profil warga, panduan/onboarding, PWA (manifest + service worker), dan notifikasi (API `/api/notifikasi`, lonceng di header, halaman `/notifikasi` dengan tandai dibaca).
+
+Belum diimplementasikan: alur status aduan berurutan (Prioritas 4b), pembaruan status real-time tanpa refresh, uji E2E/HP, deploy production, dan pembersihan data test. Jangan asumsikan perilaku dari nama folder.
 
 ## Commands
 

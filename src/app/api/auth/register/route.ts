@@ -1,56 +1,91 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/src/prisma/db';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from '@/src/lib/auth/password';
+import { issueSession } from '@/src/lib/auth/session';
 
-/**
- * POST /api/auth/register
- * Payload: { nama, email, password, noHp? }
- * Membuat user baru dengan password di-hash menggunakan bcrypt.
- * Returns 201 { ok: true } saat berhasil.
- * Returns 409 jika email sudah terdaftar.
- */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type RegisterBody = {
+  nama?: string;
+  email?: string;
+  password?: string;
+  noHp?: string;
+  kecamatanId?: number;
+};
+
 export async function POST(request: Request) {
+  let body: RegisterBody;
   try {
-    const body = await request.json();
-    const nama: string = body.nama ?? '';
-    const email: string = body.email ?? '';
-    const password: string = body.password ?? '';
-    const noHp: string | undefined = body.noHp ?? undefined;
+    body = (await request.json()) as RegisterBody;
+  } catch {
+    return NextResponse.json({ ok: false, error: 'Body JSON tidak valid' }, { status: 400 });
+  }
 
-    // --- Validasi input ---
-    if (!nama.trim() || !email.trim() || !password) {
-      return NextResponse.json(
-        { error: 'Semua kolom wajib diisi.' },
-        { status: 400 },
-      );
-    }
+  const nama = body.nama?.trim();
+  const email = body.email?.trim().toLowerCase();
+  const password = body.password;
+  const errors: string[] = [];
+  if (!nama || nama.length < 2) errors.push('Nama minimal 2 karakter');
+  if (!email || !EMAIL_RE.test(email)) errors.push('Format email tidak valid');
+  if (!password || password.length < 8) errors.push('Password minimal 8 karakter');
+  if (errors.length > 0) {
+    return NextResponse.json({ ok: false, error: errors.join('; ') }, { status: 422 });
+  }
 
-    const normalizedEmail = email.trim().toLowerCase();
-
-    // --- Cek duplikat email ---
-    const existing = await db.orm.public.User.first({ email: normalizedEmail });
+  try {
+    const existing = await db.orm.public.User.where((u) => u.email.eq(email!)).first();
     if (existing) {
-      return NextResponse.json(
-        { error: 'Email sudah terdaftar.' },
-        { status: 409 },
-      );
+      return NextResponse.json({ ok: false, error: 'Email sudah terdaftar' }, { status: 409 });
     }
 
-    // --- Hash password & simpan user ---
-    const passwordHash = await bcrypt.hash(password, 10);
+    let kecamatanId: number | undefined;
+    if (body.kecamatanId !== undefined) {
+      const kecamatan = await db.orm.public.Kecamatan.first({ id: body.kecamatanId });
+      if (!kecamatan) {
+        return NextResponse.json({ ok: false, error: 'Kecamatan tidak ditemukan' }, { status: 422 });
+      }
+      kecamatanId = body.kecamatanId;
+    }
+
     await db.orm.public.User.create({
-      nama: nama.trim(),
-      email: normalizedEmail,
-      passwordHash,
-      noHp: noHp?.trim() || undefined,
+      nama: nama!,
+      email: email!,
+      passwordHash: hashPassword(password!),
+      role: 'Warga',
+      statusAkun: 'BelumTerverifikasi',
+      noHp: body.noHp?.trim() || null,
+      kecamatanId: kecamatanId ?? null,
     });
 
-    return NextResponse.json({ ok: true }, { status: 201 });
-  } catch (err) {
-    console.error('[register] error:', err);
+    const created = await db.orm.public.User.where((u) => u.email.eq(email!)).first();
+    if (!created) {
+      return NextResponse.json(
+        { ok: false, error: 'Registrasi gagal. Silakan coba lagi.' },
+        { status: 500 },
+      );
+    }
+
+    await issueSession(created.id);
+
     return NextResponse.json(
-      { error: 'Terjadi kesalahan pada server.' },
-      { status: 500 },
+      {
+        ok: true,
+        user: {
+          id: created.id,
+          nama: created.nama,
+          email: created.email,
+          role: created.role,
+          statusAkun: created.statusAkun,
+          kecamatanId: created.kecamatanId ?? null,
+        },
+        message: 'Registrasi berhasil. Silakan ajukan verifikasi domisili.',
+      },
+      { status: 201 },
+    );
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: 'Layanan database sedang tidak tersedia. Coba beberapa saat lagi.' },
+      { status: 503 },
     );
   }
 }

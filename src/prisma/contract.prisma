@@ -42,6 +42,7 @@ model User {
   nama        String
   email       String     @unique
   passwordHash String
+  nik         String?
   role        Role       @default(Warga)
   statusAkun  StatusAkun @default(BelumTerverifikasi)
   noHp        String?

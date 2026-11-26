@@ -45,11 +45,11 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const jar = await cookies();
   const token = jar.get(SESSION_COOKIE)?.value;
   if (!token) return null;
-  const now = new Date().toISOString();
-  const session = await db.orm.public.Session
-    .where((s) => s.tokenHash.eq(hashToken(token)) && s.expiresAt.gt(now))
-    .first();
+  const session = await db.orm.public.Session.where({
+    tokenHash: hashToken(token),
+  }).first();
   if (!session) return null;
+  if (session.expiresAt <= new Date().toISOString()) return null;
   const user = await db.orm.public.User.first({ id: session.userId });
   if (!user) return null;
   return {

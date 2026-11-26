@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { db } from '@/src/prisma/db';
 import { getSessionUser } from '@/src/lib/auth/session';
 import {
+  KTP_BUCKET,
+  getSignedFileUrl,
   isStorageConfigured,
   uploadKtp,
   validateKtpFile,
@@ -69,7 +71,7 @@ export async function GET() {
     pengajuan: {
       status: pengajuan.status,
       catatan: pengajuan.catatan ?? null,
-      fileUrl: pengajuan.fileKtpUrl,
+      fileUrl: await getSignedFileUrl(KTP_BUCKET, pengajuan.fileKtpUrl),
       diajukanPada: pengajuan.createdAt,
     },
   });
